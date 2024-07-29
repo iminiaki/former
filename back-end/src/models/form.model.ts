@@ -1,5 +1,5 @@
 import { FormElement } from "./formElement.model";
-import { SubmittedForm } from "./submittedform.model";
+import { SubmittedForm } from "./submittedForm.model";
 
 export interface Form {
     id: number;
