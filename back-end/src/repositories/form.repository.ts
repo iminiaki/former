@@ -28,16 +28,21 @@ export class FormRepository implements IFormRepository {
     }
 
     public createForm(form: CreateForm): Form {
-        const submittedForms: SubmittedForm[] = [];
-        const status = 'draft';
-        const newForm: Form = { ...form, id: this.genId(), submittedForms: submittedForms, status: status };
+        const submittedForms: number[] = [];
+        const status = "draft";
+        const newForm: Form = {
+            ...form,
+            id: this.genId(),
+            submittedForms: submittedForms,
+            status: status,
+        };
         this.formRepo.push(newForm);
         return newForm;
-    };
+    }
 
     public readForm(formId: number): Form | undefined {
         return this.formRepo.find((x) => x.id == formId);
-    };
+    }
 
     public updateForm(form: Form): boolean {
         try {
@@ -52,7 +57,7 @@ export class FormRepository implements IFormRepository {
         } catch (e) {
             return false;
         }
-    };
+    }
 
     public deleteForm(form: Form): boolean {
         try {
@@ -65,8 +70,8 @@ export class FormRepository implements IFormRepository {
         } catch (e) {
             return false;
         }
-    };
+    }
     public getAllForms(): Form[] {
         return this.formRepo;
-    };
+    }
 }

@@ -1,17 +1,17 @@
-import { FormElementWithValue } from "../models/formElementWithValue.model";
+import { FormElementWithValue } from "../models/formelementWithValue.model";
 import { SubmittedForm } from "../models/submittedForm.model";
 
 export interface CreateSubmittedForm {
-    email: string
-    data: FormElementWithValue[]
+    email: string;
+    data: FormElementWithValue[];
 }
 
 export interface ISubmittedFormRepository {
     createSubmittedForm(submittedForm: CreateSubmittedForm): SubmittedForm;
-    readSubmittedForm(submittedFormId: number): SubmittedForm | undefined
-    updateSubmittedForm(submittedForm: SubmittedForm): boolean
-    deleteSubmittedForm(submittedForm: SubmittedForm): boolean
-    getAllSubmittedForm(): SubmittedForm[]
+    readSubmittedForm(submittedFormId: number): SubmittedForm | undefined;
+    updateSubmittedForm(submittedForm: SubmittedForm): boolean;
+    deleteSubmittedForm(submittedForm: SubmittedForm): boolean;
+    getAllSubmittedForm(): SubmittedForm[];
 }
 
 export class submittedFormRepository implements ISubmittedFormRepository {
@@ -25,19 +25,26 @@ export class submittedFormRepository implements ISubmittedFormRepository {
         return this.submmitedFormRepo.length + 1;
     }
 
-    public createSubmittedForm(submittedForm: CreateSubmittedForm): SubmittedForm {
-        const newSubmittedForm: SubmittedForm = { ...submittedForm, id: this.getId() };
+    public createSubmittedForm(
+        submittedForm: CreateSubmittedForm
+    ): SubmittedForm {
+        const newSubmittedForm: SubmittedForm = {
+            ...submittedForm,
+            id: this.getId(),
+        };
         this.submmitedFormRepo.push(newSubmittedForm);
         return newSubmittedForm;
     }
 
-    public readSubmittedForm(submittedFormId: number): SubmittedForm | undefined {
+    public readSubmittedForm(
+        submittedFormId: number
+    ): SubmittedForm | undefined {
         return this.submmitedFormRepo.find((x) => x.id == submittedFormId);
     }
 
     public updateSubmittedForm(submittedForm: SubmittedForm): boolean {
         try {
-            const readSubmittedForm = this.readSubmittedForm(submittedForm.id)
+            const readSubmittedForm = this.readSubmittedForm(submittedForm.id);
             if (readSubmittedForm) {
                 readSubmittedForm.email = submittedForm.email;
                 readSubmittedForm.data = submittedForm.data;
@@ -51,7 +58,7 @@ export class submittedFormRepository implements ISubmittedFormRepository {
 
     public deleteSubmittedForm(submittedForm: SubmittedForm): boolean {
         try {
-            const index = this.submmitedFormRepo.indexOf(submittedForm)
+            const index = this.submmitedFormRepo.indexOf(submittedForm);
             if (index >= 0) {
                 this.submmitedFormRepo.splice(index, 1);
                 return true;
@@ -65,6 +72,4 @@ export class submittedFormRepository implements ISubmittedFormRepository {
     public getAllSubmittedForm(): SubmittedForm[] {
         return this.submmitedFormRepo;
     }
-
-
 }

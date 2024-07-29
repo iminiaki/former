@@ -6,6 +6,6 @@ export interface Form {
     name: string;
     description: string;
     elements: FormElement[];
-    status: 'published' | 'draft';
-    submittedForms: SubmittedForm[];
+    status: "published" | "draft";
+    submittedForms: number[];
 }
