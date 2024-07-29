@@ -46,8 +46,9 @@ export class FormRepository implements IFormRepository {
                 readForm.name = form.name;
                 readForm.description = form.description;
                 readForm.elements = form.elements;
+                return true;
             }
-            return true;
+            return false;
         } catch (e) {
             return false;
         }
@@ -58,8 +59,9 @@ export class FormRepository implements IFormRepository {
             const index = this.formRepo.indexOf(form);
             if (index >= 0) {
                 this.formRepo.splice(index, 1);
+                return true;
             }
-            return true;
+            return false;
         } catch (e) {
             return false;
         }

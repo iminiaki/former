@@ -40,8 +40,9 @@ export class UserRepository implements IUserRepository {
             const readUser = this.readUser(user.id);
             if (readUser) {
                 readUser.name = user.name;
+                return true;
             }
-            return true;
+            return false;
         } catch (e) {
             return false;
         }
@@ -52,8 +53,9 @@ export class UserRepository implements IUserRepository {
             const index = this.userRepo.indexOf(user);
             if (index >= 0) {
                 this.userRepo.splice(index, 1);
-            }
-            return true;
+                return true;
+            };
+            return false;
         } catch (e) {
             return false;
         }
