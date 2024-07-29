@@ -14,7 +14,7 @@ export interface ISubmittedFormRepository {
     getAllSubmittedForm(): SubmittedForm[];
 }
 
-export class submittedFormRepository implements ISubmittedFormRepository {
+export class SubmittedFormRepository implements ISubmittedFormRepository {
     private submmitedFormRepo: SubmittedForm[];
 
     constructor() {
