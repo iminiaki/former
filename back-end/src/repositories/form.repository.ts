@@ -29,7 +29,8 @@ export class FormRepository implements IFormRepository {
 
     public createForm(form: CreateForm): Form {
         const submittedForms: SubmittedForm[] = [];
-        const newForm: Form = { ...form, id: this.genId(), submittedForms: submittedForms };
+        const status = 'draft';
+        const newForm: Form = { ...form, id: this.genId(), submittedForms: submittedForms, status: status };
         this.formRepo.push(newForm);
         return newForm;
     };
