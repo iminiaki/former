@@ -42,11 +42,36 @@ describe("User service test suite", () => {
     });
 
     it("should get empty array if user have no form", () => {
-        const userForms: UserForm[] = [];
         const result = userService.getUserForms({
             name: "nadershah",
             password: "kohenoor",
         });
         expect(result.length).toBe(0);
+    });
+
+    it("should add a form to user", () => {
+        const newForm = userService.addForm("nadershah", "kohenoor", {
+            name: "poll",
+            description: "test",
+            elements: [
+                {
+                    name: "age",
+                    type: "number",
+                },
+            ],
+        });
+
+        expect(newForm.name).toBe("poll");
+        expect(newForm).toHaveProperty("description");
+        expect(newForm.elements[0].type).toBe("number");
+
+        const forms = userService.getUserForms({
+            name: "nadershah",
+            password: "kohenoor",
+        });
+
+        expect(forms[0].name).toBe("poll");
+        expect(forms[0].description).toBe("test");
+        expect(forms[0].status).toBe("draft");
     });
 });

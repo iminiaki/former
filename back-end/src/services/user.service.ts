@@ -1,3 +1,4 @@
+import { CreateFormDto } from "../dtos/createForm.dto";
 import { getUserFormsDto, GetUserFormsDto } from "../dtos/getUserForms.dto";
 import { Form } from "../models/form.model";
 import { IUserRepository } from "../repositories/user.repository";
@@ -57,5 +58,23 @@ export class UserService {
         });
 
         return userForms;
+    }
+
+    addForm(name: string, password: string, dto: CreateFormDto) {
+        const user = this.userRepo.readUserWithNamePassword(name, password);
+        if (!user) {
+            throw new NotFoundError();
+        }
+
+        try {
+            const createdForm: Form = this.formService.createForm(dto);
+            if (!this.userRepo.addForm(user.id, createdForm.id)) {
+                throw new NotFoundError();
+            }
+
+            return createdForm;
+        } catch (error) {
+            throw error;
+        }
     }
 }

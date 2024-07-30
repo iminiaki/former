@@ -13,6 +13,7 @@ export interface IUserRepository {
     deleteUser(user: User): boolean;
     getAllUsers(): User[];
     readUserWithNamePassword(name: string, password: string): User | undefined;
+    addForm(userId: number, formId: number): boolean;
 }
 
 export class UserRepository implements IUserRepository {
@@ -76,5 +77,14 @@ export class UserRepository implements IUserRepository {
         return this.userRepo.find(
             (x) => x.name == name && x.password == password
         );
+    }
+
+    public addForm(userId: number, formId: number): boolean {
+        const user = this.readUser(userId);
+        if (!user) {
+            return false;
+        }
+        user.forms.push(formId);
+        return true;
     }
 }
