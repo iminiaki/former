@@ -12,13 +12,16 @@ export interface IUserRepository {
     updateUser(user: User): boolean;
     deleteUser(user: User): boolean;
     getAllUsers(): User[];
+    readUserWithNamePassword(name: string, password: string): User | undefined;
 }
 
 export class UserRepository implements IUserRepository {
     private userRepo: User[];
 
     constructor() {
-        this.userRepo = [];
+        this.userRepo = [
+            { id: 1, name: "nadershah", password: "kohenoor", forms: [] },
+        ];
     }
 
     private genId(): number {
@@ -64,5 +67,14 @@ export class UserRepository implements IUserRepository {
 
     public getAllUsers(): User[] {
         return this.userRepo;
+    }
+
+    public readUserWithNamePassword(
+        name: string,
+        password: string
+    ): User | undefined {
+        return this.userRepo.find(
+            (x) => x.name == name && x.password == password
+        );
     }
 }
