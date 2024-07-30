@@ -1,5 +1,6 @@
-import { CreateFormDto } from "../dtos/createForm.dto";
+import { FormDto, formDto } from "../dtos/createForm.dto";
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
+import { Form } from "../models/form.model";
 import { IFormRepository } from "../repositories/form.repository";
 import {
     ForbiddenError,
@@ -14,9 +15,9 @@ export class FormService {
         private submittedFormService: SubmittedFormService
     ) {}
 
-    createForm(dto: CreateFormDto) {
+    createForm(dto: FormDto) {
         try {
-            CreateFormDto.parse(dto);
+            formDto.parse(dto);
         } catch (error) {
             throw error;
         }
@@ -52,5 +53,12 @@ export class FormService {
 
     readFormById(formId: number) {
         return this.formRepo.readForm(formId);
+    }
+
+    updateForm(form: Form): boolean {
+        if (this.formRepo.updateForm(form)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -1,4 +1,5 @@
-import { CreateFormDto } from "../dtos/createForm.dto";
+import { read } from "fs";
+import { FormDto, formDto } from "../dtos/createForm.dto";
 import { userDto, UserDto } from "../dtos/getUserForms.dto";
 import { Form } from "../models/form.model";
 import { FormElement } from "../models/formElement.model";
@@ -65,7 +66,7 @@ export class UserService {
         return userForms;
     }
 
-    addForm(user_dto: UserDto, dto: CreateFormDto) {
+    addForm(user_dto: UserDto, dto: FormDto) {
         try {
             userDto.parse(user_dto);
         } catch (error) {
@@ -123,5 +124,52 @@ export class UserService {
             elements: readedForm.elements,
             status: readedForm.status,
         };
+    }
+
+    updateForm(user_dto: UserDto, formId: number, formDto: FormDto) {
+        try {
+            userDto.parse(user_dto);
+        } catch (error) {
+            throw error;
+        }
+
+        const user = this.userRepo.readUserWithNamePassword(
+            user_dto.name,
+            user_dto.password
+        );
+        if (!user) {
+            throw new NotFoundError();
+        }
+
+        if (!user.forms.includes(formId)) {
+            throw new ForbiddenError();
+        }
+
+        const readedForm = this.formService.readFormById(formId);
+        if (!readedForm) {
+            throw new NotFoundError();
+        }
+
+        if (readedForm.submittedForms.length != 0) {
+            throw new ForbiddenError();
+        }
+
+        try {
+            const updateResult = this.formService.updateForm({
+                id: formId,
+                ...formDto,
+                status: readedForm.status,
+                submittedForms: readedForm.submittedForms,
+            });
+            if (updateResult) {
+                return {
+                    id: formId,
+                    ...formDto,
+                    status: readedForm.status,
+                };
+            }
+        } catch (error) {
+            throw error;
+        }
     }
 }

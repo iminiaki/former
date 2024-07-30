@@ -6,10 +6,10 @@ const FormElementDto = z.object({
     options: z.array(z.string()).optional(),
 });
 
-export const CreateFormDto = z.object({
+export const formDto = z.object({
     name: z.string().min(1),
     description: z.string(),
     elements: z.array(FormElementDto).min(1),
 });
 
-export type CreateFormDto = z.infer<typeof CreateFormDto>;
+export type FormDto = z.infer<typeof formDto>;

@@ -115,4 +115,39 @@ describe("User service test suite", () => {
 
         expect(formInfo).toHaveProperty("elements");
     });
+
+    it("should pass if everything is ok in update form", () => {
+        const newForm = userService.addForm(
+            { name: "nadershah", password: "kohenoor" },
+            {
+                name: "poll",
+                description: "test",
+                elements: [
+                    {
+                        name: "age",
+                        type: "number",
+                    },
+                ],
+            }
+        );
+
+        const editedForm = userService.updateForm(
+            { name: "nadershah", password: "kohenoor" },
+            newForm.id,
+            {
+                name: "poll_new",
+                description: "test_new",
+                elements: [
+                    {
+                        name: "weight",
+                        type: "number",
+                    },
+                ],
+            }
+        );
+
+        expect(editedForm?.name).toBe("poll_new");
+        expect(editedForm?.description).toBe("test_new");
+        expect(editedForm?.elements[0].name).toBe("weight");
+    });
 });
