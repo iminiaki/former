@@ -11,6 +11,7 @@ export interface CreateForm {
 export interface IFormRepository {
     createForm(form: CreateForm): Form;
     readForm(formId: number): Form | undefined;
+    addSubmittedForm(formId: number, submittedFormId: number): boolean;
     updateForm(form: Form): boolean;
     deleteForm(form: Form): boolean;
     getAllForms(): Form[];
@@ -55,6 +56,20 @@ export class FormRepository implements IFormRepository {
             }
             return false;
         } catch (e) {
+            return false;
+        }
+    }
+
+    public addSubmittedForm(formId: number, submittedFormId: number): boolean {
+        try {
+            const readForm = this.readForm(formId);
+            if (readForm) {
+                readForm.submittedForms.push(submittedFormId);
+                return true;
+            }
+            return false;
+        }
+        catch (e) {
             return false;
         }
     }
