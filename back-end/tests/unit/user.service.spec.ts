@@ -13,7 +13,7 @@ import {
 import { FormService } from "../../src/services/form.service";
 import { SubmittedFormService } from "../../src/services/submittedForm.servicec";
 import { UserForm, UserService } from "../../src/services/user.service";
-import { NotFoundError } from "../../src/utilities/HttpError";
+import { ForbiddenError, NotFoundError } from "../../src/utilities/HttpError";
 
 describe("User service test suite", () => {
     let userRepo: IUserRepository;
@@ -50,16 +50,19 @@ describe("User service test suite", () => {
     });
 
     it("should add a form to user", () => {
-        const newForm = userService.addForm("nadershah", "kohenoor", {
-            name: "poll",
-            description: "test",
-            elements: [
-                {
-                    name: "age",
-                    type: "number",
-                },
-            ],
-        });
+        const newForm = userService.addForm(
+            { name: "nadershah", password: "kohenoor" },
+            {
+                name: "poll",
+                description: "test",
+                elements: [
+                    {
+                        name: "age",
+                        type: "number",
+                    },
+                ],
+            }
+        );
 
         expect(newForm.name).toBe("poll");
         expect(newForm).toHaveProperty("description");
@@ -73,5 +76,43 @@ describe("User service test suite", () => {
         expect(forms[0].name).toBe("poll");
         expect(forms[0].description).toBe("test");
         expect(forms[0].status).toBe("draft");
+    });
+
+    it("should fail if user does not have specified form id", () => {
+        expect(() =>
+            userService.getFormWithId(
+                {
+                    name: "nadershah",
+                    password: "kohenoor",
+                },
+                2
+            )
+        ).toThrow(ForbiddenError);
+    });
+
+    it("should pass if every thing is ok", () => {
+        const newForm = userService.addForm(
+            { name: "nadershah", password: "kohenoor" },
+            {
+                name: "poll",
+                description: "test",
+                elements: [
+                    {
+                        name: "age",
+                        type: "number",
+                    },
+                ],
+            }
+        );
+
+        const formInfo = userService.getFormWithId(
+            {
+                name: "nadershah",
+                password: "kohenoor",
+            },
+            newForm.id
+        );
+
+        expect(formInfo).toHaveProperty("elements");
     });
 });

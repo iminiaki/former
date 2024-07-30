@@ -1,8 +1,9 @@
 import { CreateFormDto } from "../dtos/createForm.dto";
-import { getUserFormsDto, GetUserFormsDto } from "../dtos/getUserForms.dto";
+import { userDto, UserDto } from "../dtos/getUserForms.dto";
 import { Form } from "../models/form.model";
+import { FormElement } from "../models/formElement.model";
 import { IUserRepository } from "../repositories/user.repository";
-import { NotFoundError } from "../utilities/HttpError";
+import { ForbiddenError, NotFoundError } from "../utilities/HttpError";
 import { FormService } from "./form.service";
 
 export interface UserForm {
@@ -12,15 +13,19 @@ export interface UserForm {
     status: "published" | "draft";
 }
 
+export interface UserFormWithElements extends UserForm {
+    elements: FormElement[];
+}
+
 export class UserService {
     constructor(
         private userRepo: IUserRepository,
         private formService: FormService
     ) {}
 
-    getUserForms(dto: GetUserFormsDto) {
+    getUserForms(dto: UserDto) {
         try {
-            getUserFormsDto.parse(dto);
+            userDto.parse(dto);
         } catch (error) {
             throw error;
         }
@@ -60,8 +65,17 @@ export class UserService {
         return userForms;
     }
 
-    addForm(name: string, password: string, dto: CreateFormDto) {
-        const user = this.userRepo.readUserWithNamePassword(name, password);
+    addForm(user_dto: UserDto, dto: CreateFormDto) {
+        try {
+            userDto.parse(user_dto);
+        } catch (error) {
+            throw error;
+        }
+
+        const user = this.userRepo.readUserWithNamePassword(
+            user_dto.name,
+            user_dto.password
+        );
         if (!user) {
             throw new NotFoundError();
         }
@@ -76,5 +90,38 @@ export class UserService {
         } catch (error) {
             throw error;
         }
+    }
+
+    getFormWithId(user_dto: UserDto, formId: number): UserFormWithElements {
+        try {
+            userDto.parse(user_dto);
+        } catch (error) {
+            throw error;
+        }
+
+        const user = this.userRepo.readUserWithNamePassword(
+            user_dto.name,
+            user_dto.password
+        );
+        if (!user) {
+            throw new NotFoundError();
+        }
+
+        if (!user.forms.includes(formId)) {
+            throw new ForbiddenError();
+        }
+
+        const readedForm = this.formService.readFormById(formId);
+        if (!readedForm) {
+            throw new NotFoundError();
+        }
+
+        return {
+            id: readedForm.id,
+            name: readedForm.name,
+            description: readedForm.description,
+            elements: readedForm.elements,
+            status: readedForm.status,
+        };
     }
 }
