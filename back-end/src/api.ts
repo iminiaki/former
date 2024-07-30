@@ -1,5 +1,5 @@
 import express from "express";
-import { SubmittedFormRepository } from "./repositories/submitterForm.repository";
+import { SubmittedFormRepository } from "./repositories/submittedForm.repository";
 import { FormRepository } from "./repositories/form.repository";
 import { UserRepository } from "./repositories/user.repository";
 import { SubmittedFormService } from "./services/submittedForm.servicec";

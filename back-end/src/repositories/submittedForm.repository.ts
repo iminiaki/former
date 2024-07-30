@@ -1,4 +1,4 @@
-import { FormElementWithValue } from "../models/formelementWithValue.model";
+import { FormElementWithValue } from "../models/formElementWithValue.model";
 import { SubmittedForm } from "../models/submittedForm.model";
 
 export interface CreateSubmittedForm {
@@ -8,7 +8,8 @@ export interface CreateSubmittedForm {
 
 export interface ISubmittedFormRepository {
     createSubmittedForm(submittedForm: CreateSubmittedForm): SubmittedForm;
-    readSubmittedForm(submittedFormId: number): SubmittedForm | undefined;
+    readSubmittedFormById(submittedFormId: number): SubmittedForm | undefined;
+    readSubmittedFormByEmail(submittedFormEmail: string): SubmittedForm | undefined; 
     updateSubmittedForm(submittedForm: SubmittedForm): boolean;
     deleteSubmittedForm(submittedForm: SubmittedForm): boolean;
     getAllSubmittedForm(): SubmittedForm[];
@@ -36,15 +37,21 @@ export class SubmittedFormRepository implements ISubmittedFormRepository {
         return newSubmittedForm;
     }
 
-    public readSubmittedForm(
+    public readSubmittedFormById(
         submittedFormId: number
     ): SubmittedForm | undefined {
         return this.submmitedFormRepo.find((x) => x.id == submittedFormId);
     }
 
+    public readSubmittedFormByEmail(
+        submittedFormEmail: string
+    ): SubmittedForm | undefined {
+        return this.submmitedFormRepo.find((x) => x.email === submittedFormEmail);
+    }
+
     public updateSubmittedForm(submittedForm: SubmittedForm): boolean {
         try {
-            const readSubmittedForm = this.readSubmittedForm(submittedForm.id);
+            const readSubmittedForm = this.readSubmittedFormById(submittedForm.id);
             if (readSubmittedForm) {
                 readSubmittedForm.email = submittedForm.email;
                 readSubmittedForm.data = submittedForm.data;
