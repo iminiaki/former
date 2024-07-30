@@ -1,4 +1,4 @@
-import { FormElementWithValue } from "./formelementWithValue.model";
+import { FormElementWithValue } from "./formElementWithValue.model";
 
 export interface SubmittedForm {
     id: number;
