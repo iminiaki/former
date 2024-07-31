@@ -1,5 +1,5 @@
 import { SubmittedFormRepository } from "../../src/repositories/submittedForm.repository";
-import { SubmittedFormService } from "../../src/services/submittedForm.servicec"
+import { SubmittedFormService } from "../../src/services/submittedForm.service"
 import { ForbiddenError } from "../../src/utilities/HttpError";
 
 describe('Submitted form service test suite', () => {

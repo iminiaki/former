@@ -1,7 +1,7 @@
 import { FormRepository } from "../../src/repositories/form.repository";
 import { SubmittedFormRepository } from "../../src/repositories/submittedForm.repository";
 import { FormService } from "../../src/services/form.service";
-import { SubmittedFormService } from "../../src/services/submittedForm.servicec";
+import { SubmittedFormService } from "../../src/services/submittedForm.service";
 import {
     ForbiddenError,
     HttpError,

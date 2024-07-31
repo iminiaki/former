@@ -1,13 +1,17 @@
+import { response } from "express";
 import { FormDto, formDto } from "../dtos/createForm.dto";
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
 import { Form } from "../models/form.model";
+import { SubmittedForm } from "../models/submittedForm.model";
 import { IFormRepository } from "../repositories/form.repository";
 import {
     ForbiddenError,
     HttpError,
     NotFoundError,
 } from "../utilities/HttpError";
-import { SubmittedFormService } from "./submittedForm.servicec";
+import { SubmittedFormService } from "./submittedForm.service";
+import { FormElement } from "../models/formElement.model";
+import { FormQuestionResponses, FormSelectQuestionResponses, FormTextQuestionResponses, OptionsResponses } from "../models/formQuestionResponses";
 
 export class FormService {
     constructor(
@@ -60,6 +64,70 @@ export class FormService {
         else {
             form.status = "draft";
             return "draft"
+        }
+    }
+
+    getFormResponses(formId: number) {
+        const form = this.readFormById(formId);
+        const responses: SubmittedForm[] = []
+        if (form.submittedForms.length == 0) {
+            return responses;
+        }
+
+        form.submittedForms.forEach((submittedFormId) => {
+            const submittedForm = this.submittedFormService.readSubmittedFormById(submittedFormId);
+            if (submittedForm) {
+                responses.push(submittedForm);
+            }
+        });
+
+        return responses;
+    }
+
+    // getFormResponsesSummary(formId: number) {
+    //     const responses: SubmittedForm[] = this.getFormResponses(formId);
+    //     const elements: FormElement[] = this.getFormElements(formId);
+    //     const summary: FormQuestionResponses[] = [];
+    //     if (responses.length == 0) {
+    //         return summary;
+    //     }
+        
+    //     elements.forEach((element) => {
+    //         if (element.options) {
+    //             const questionOptions: OptionsResponses[] = [];
+    //             element.options.forEach((option) => {
+    //                 questionOptions.push({option: option, count: 0});
+    //             })
+    //             const question: FormSelectQuestionResponses = { name: element.name, responses: questionOptions};
+    //             summary.push(question);
+    //         }
+    //         else {
+    //             const question: FormTextQuestionResponses = { name: element.name, responses: []};
+    //             summary.push(question);
+    //         }
+    //     });
+
+    //     summary.forEach((question) => {
+    //         responses.forEach(())
+    //     })
+    // }
+
+    getFormElements(formId: number) {
+        const form = this.readFormById(formId);
+        return form.elements;
+    }
+
+    async getFormById(formId: number) {
+        const form = this.readFormById(formId);
+        if (form.status === "draft") {
+            throw new ForbiddenError();
+        }
+
+        return {
+            id: form.id,
+            name: form.name,
+            description: form.description,
+            elements: form.elements,
         }
     }
 

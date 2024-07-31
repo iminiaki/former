@@ -2,7 +2,7 @@ import express from "express";
 import { SubmittedFormRepository } from "./repositories/submittedForm.repository";
 import { FormRepository } from "./repositories/form.repository";
 import { UserRepository } from "./repositories/user.repository";
-import { SubmittedFormService } from "./services/submittedForm.servicec";
+import { SubmittedFormService } from "./services/submittedForm.service";
 import { FormService } from "./services/form.service";
 import { UserService } from "./services/user.service";
 import { makeUserRoute } from "./routes/user.route";

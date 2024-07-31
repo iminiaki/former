@@ -1,6 +1,6 @@
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
 import { ISubmittedFormRepository } from "../repositories/submittedForm.repository";
-import { ForbiddenError } from "../utilities/HttpError";
+import { ForbiddenError, NotFoundError } from "../utilities/HttpError";
 
 export class SubmittedFormService {
     constructor(private submittedFormRepo: ISubmittedFormRepository) {}
@@ -22,5 +22,13 @@ export class SubmittedFormService {
         };
         return this.submittedFormRepo.createSubmittedForm(newSubmittedForm)
     };
+
+    readSubmittedFormById(id: number) {
+        const submittedForm = this.submittedFormRepo.readSubmittedFormById(id);
+        if (!submittedForm) {
+            throw new NotFoundError;
+        }
+        return submittedForm;
+    }
 
 };

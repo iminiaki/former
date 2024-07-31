@@ -11,7 +11,7 @@ import {
     UserRepository,
 } from "../../src/repositories/user.repository";
 import { FormService } from "../../src/services/form.service";
-import { SubmittedFormService } from "../../src/services/submittedForm.servicec";
+import { SubmittedFormService } from "../../src/services/submittedForm.service";
 import { UserForm, UserService } from "../../src/services/user.service";
 import { ForbiddenError, NotFoundError } from "../../src/utilities/HttpError";
 
