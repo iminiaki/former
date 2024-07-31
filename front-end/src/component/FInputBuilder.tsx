@@ -1,35 +1,33 @@
-import React, { useState } from 'react';
+import { useState } from 'react'
 import { FInput } from './FInput.tsx'
 import { FDropdown } from './FDropDown.tsx'
-import { FCheckBox } from './FCheckBox.tsx';
-import { FRadio } from './FRadio.tsx';
+import { FCheckBoxBuilder } from './FCheckBoxBuilder.tsx'
+import { FRadio } from './FRadio.tsx'
 import { FIcon } from './FIcon.tsx'
 import { FDropDownInput } from './FDropDownInput.tsx'
-import { FAdminValidationBox } from './FAdminValidationBox.tsx'
-import { FVerDevider } from './FVerDevider.tsx';
-import './FInputBuilder.css';
-
+import { FAdminValidationBox } from './AdminValidationBox/FAdminValidationBox.tsx'
+import { FVerDevider } from './FVerDevider.tsx'
 export const FInputBuilder = () => {
-  const [selectedOption, setSelectedOption] = useState('Text');
+  const [selectedOption, setSelectedOption] = useState('Text')
 
   const handleChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
+    setSelectedOption(event.target.value)
+  }
 
   const renderInput = () => {
     switch (selectedOption) {
       case 'Text':
-        return <FInput placeholder="Short answer text" isBorder isReadonly />;
+        return <FInput placeholder="Short answer text" isBorder isReadonly />
       case 'Checkbox':
-        return <FCheckBox />;
+        return <FCheckBoxBuilder />
       case 'Radio':
-        return <FRadio />;
+        return <FRadio />
       case 'Dropdown':
-        return <FDropDownInput />;
+        return <FDropDownInput />
       default:
-        return console.log("kirekhar"); // Return null if no conditions are met
+        return console.log('kirekhar') // Return null if no conditions are met
     }
-  };
+  }
   return (
     <div
       className={
@@ -39,13 +37,15 @@ export const FInputBuilder = () => {
       <main className={'row-span-5'}>
         <header className={'w-full flex justify-between items-center h-3/5'}>
           <FInput placeholder={'Untitled Question'} isBorder />
-          <FDropdown selectedOption={selectedOption} handleChange={handleChange} />
+          <FDropdown
+            selectedOption={selectedOption}
+            handleChange={handleChange}
+          />
         </header>
         <main>
           {/*<FInput placeholder={'Short answer text'} isBorder isReadonly />*/}
           {/* <FDropDownInput /> */}
           {renderInput()}
-          
         </main>
       </main>
       <footer
@@ -56,7 +56,7 @@ export const FInputBuilder = () => {
         <label className={'flex items-center px-4'}>
           <FIcon src={'../public/icon/delete.png'} alt={'delete'} />
           <FVerDevider />
-          <FAdminValidationBox value={'isRequired'} />
+          <FAdminValidationBox value={'Unique'} />
           <FAdminValidationBox value={'isUnique'} />
         </label>
       </footer>
