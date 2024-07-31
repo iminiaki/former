@@ -11,7 +11,12 @@ import {
 } from "../utilities/HttpError";
 import { SubmittedFormService } from "./submittedForm.service";
 import { FormElement } from "../models/formElement.model";
-import { FormQuestionResponses, FormSelectQuestionResponses, FormTextQuestionResponses, OptionsResponses } from "../models/formQuestionResponses";
+import {
+    FormQuestionResponses,
+    FormSelectQuestionResponses,
+    FormTextQuestionResponses,
+    OptionsResponses,
+} from "../models/formQuestionResponses";
 
 export class FormService {
     constructor(
@@ -59,23 +64,25 @@ export class FormService {
         const form = this.readFormById(formId);
         if (form.status === "draft") {
             form.status = "published";
-            return "published"
-        }
-        else {
+            return "published";
+        } else {
             form.status = "draft";
-            return "draft"
+            return "draft";
         }
     }
 
     getFormResponses(formId: number) {
         const form = this.readFormById(formId);
-        const responses: SubmittedForm[] = []
+        const responses: SubmittedForm[] = [];
         if (form.submittedForms.length == 0) {
             return responses;
         }
 
         form.submittedForms.forEach((submittedFormId) => {
-            const submittedForm = this.submittedFormService.readSubmittedFormById(submittedFormId);
+            const submittedForm =
+                this.submittedFormService.readSubmittedFormById(
+                    submittedFormId
+                );
             if (submittedForm) {
                 responses.push(submittedForm);
             }
@@ -91,7 +98,7 @@ export class FormService {
     //     if (responses.length == 0) {
     //         return summary;
     //     }
-        
+
     //     elements.forEach((element) => {
     //         if (element.options) {
     //             const questionOptions: OptionsResponses[] = [];
@@ -128,13 +135,13 @@ export class FormService {
             name: form.name,
             description: form.description,
             elements: form.elements,
-        }
+        };
     }
 
     readFormById(formId: number) {
         const form = this.formRepo.readForm(formId);
         if (!form) {
-            throw new NotFoundError;
+            throw new NotFoundError();
         }
         return form;
     }
