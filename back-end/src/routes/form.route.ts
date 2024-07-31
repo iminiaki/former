@@ -6,9 +6,6 @@ import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
 export const makeFormRoute = (formService: FormService) => {
     const app = Router();
 
-    //1-2
-    app.put("/update/:id", (req, res) => {});
-
     //2-2
     app.post("/:formId", (req, res) => {
         const formId = Number(req.params.formId);
