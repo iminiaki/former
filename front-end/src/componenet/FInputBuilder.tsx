@@ -1,6 +1,8 @@
 import { FInput } from './FInput.tsx'
 import { FDropdown } from './FDropDown.tsx'
 import { FIcon } from './FIcon.tsx'
+import { FDropDownInput } from './FDropDownInput.tsx'
+import { FAdminValidationBox } from './FAdminValidationBox.tsx'
 
 export const FInputBuilder = () => {
   return (
@@ -15,7 +17,8 @@ export const FInputBuilder = () => {
           <FDropdown />
         </header>
         <main>
-          <FInput placeholder={'Short answer text'} isBorder isReadonly />
+          {/*<FInput placeholder={'Short answer text'} isBorder isReadonly />*/}
+          <FDropDownInput />
         </main>
       </main>
       <footer
@@ -24,10 +27,9 @@ export const FInputBuilder = () => {
         }
       >
         <label className={'flex items-center px-4'}>
-          <FIcon src={'../public/icon/plus.png'} alt={'plus'} />
           <FIcon src={'../public/icon/delete.png'} alt={'delete'} />
-          <span className={'mx-2'}>isRequired</span>
-          <input type={'checkbox'} />
+          <FAdminValidationBox value={'isRequired'} />
+          <FAdminValidationBox value={'isUnique'} />
         </label>
       </footer>
     </div>
