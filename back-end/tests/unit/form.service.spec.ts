@@ -47,28 +47,28 @@ describe("Form service test suite", () => {
         ).toThrow(Error);
     });
 
-    // need to add published method and publish form to work
-    // it('should add a submitted form to form', () => {
-    //     const newForm = formService.createForm(
-    //         {
-    //             name: "poll",
-    //             description: "test",
-    //             elements: [{
-    //                 name: "age",
-    //                 type: "number",
-    //             }],
-    //         }
-    //     );
-    //     expect(formService.addSubmittedForm({
-    //         email: "test@gmail.com",
-    //         data: [{
-    //             name: "age",
-    //             type: "number",
-    //             value: "20",
-    //         }],
-    //     }, newForm.id)).toBe(true);
-    //     expect(newForm.submittedForms.length).toBe(1);
-    // });
+    it('should add a submitted form to form', () => {
+        const newForm = formService.createForm(
+            {
+                name: "poll",
+                description: "test",
+                elements: [{
+                    name: "age",
+                    type: "number",
+                }],
+            }
+        );
+        formService.switchFormStatus(newForm.id)
+        expect(formService.addSubmittedForm({
+            email: "test@gmail.com",
+            data: [{
+                name: "age",
+                type: "number",
+                value: "20",
+            }],
+        }, newForm.id)).toBe(true);
+        expect(newForm.submittedForms.length).toBe(1);
+    });
 
     it("should fail to add a submitted form to a draft form", () => {
         const newForm = formService.createForm({
@@ -116,33 +116,32 @@ describe("Form service test suite", () => {
         ).toThrow(NotFoundError);
     });
 
-    // need to add published method and publish form to work
-    // it('should fail to add a submitted form to form if there is conflict in elements', () => {
-    //     const newForm = formService.createForm(
-    //         {
-    //             name: "poll",
-    //             description: "test",
-    //             elements: [{
-    //                 name: "age",
-    //                 type: "number",
-    //             }],
-    //         }
-    //     );
-    //     expect(() => formService.addSubmittedForm({
-    //         email: "test@gmail.com",
-    //         data: [{
-    //             name: "age",
-    //             type: "number",
-    //             value: "20",
-    //         },
-    //         {
-    //             name: "gender",
-    //             type: "select",
-    //             options: ["male", "female"],
-    //             value: "male"
-    //         },
-    //     ],
-    //     }, newForm.id)).toThrow(new HttpError(409, "Conflict"));
-    //     expect(newForm.submittedForms.length).toBe(1);
-    // });
+    it('should fail to add a submitted form to form if there is conflict in elements', () => {
+        const newForm = formService.createForm(
+            {
+                name: "poll",
+                description: "test",
+                elements: [{
+                    name: "age",
+                    type: "number",
+                }],
+            }
+        );
+        formService.switchFormStatus(newForm.id)
+        expect(() => formService.addSubmittedForm({
+            email: "test@gmail.com",
+            data: [{
+                name: "age",
+                type: "number",
+                value: "20",
+            },
+            {
+                name: "gender",
+                type: "select",
+                options: ["male", "female"],
+                value: "male"
+            },
+        ],
+        }, newForm.id)).toThrow(new HttpError(409, "Conflict"));
+    });
 });

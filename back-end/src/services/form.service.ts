@@ -34,8 +34,8 @@ export class FormService {
     addSubmittedForm(dto: CreateSubmittedFormDto, formId: number): boolean {
         const newSubmittedForm =
             this.submittedFormService.createSubmittedForm(dto);
-        const form = this.formRepo.readForm(formId);
-        if (!newSubmittedForm || !form) {
+        const form = this.readFormById(formId);
+        if (!newSubmittedForm) {
             throw new NotFoundError();
         }
 
@@ -51,8 +51,24 @@ export class FormService {
         return true;
     }
 
+    switchFormStatus(formId: number) {
+        const form = this.readFormById(formId);
+        if (form.status === "draft") {
+            form.status = "published";
+            return "published"
+        }
+        else {
+            form.status = "draft";
+            return "draft"
+        }
+    }
+
     readFormById(formId: number) {
-        return this.formRepo.readForm(formId);
+        const form = this.formRepo.readForm(formId);
+        if (!form) {
+            throw new NotFoundError;
+        }
+        return form;
     }
 
     updateForm(form: Form): boolean {
