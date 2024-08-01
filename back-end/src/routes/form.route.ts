@@ -9,7 +9,7 @@ export const makeFormRoute = (formService: FormService) => {
 
     //2-2
     app.post("/:formId", (req, res) => {
-        const formId = Number(req.params.formId);
+        const formId = z.coerce.number().parse(req.params.formId);
         const dto = CreateSubmittedFormDto.parse(req.body);
         handleExpress(res, async () =>
             formService.addSubmittedForm(dto, formId)
@@ -26,7 +26,7 @@ export const makeFormRoute = (formService: FormService) => {
 
     //2-1
     app.get("/publish/:formId", (req, res) => {
-        const formId = Number(req.params.formId);
+        const formId = z.coerce.number().parse(req.params.formId);
 
         handleExpress(res, async () => {
             const formStatus = formService.switchFormStatus(formId);

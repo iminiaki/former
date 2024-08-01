@@ -34,7 +34,7 @@ export const makeUserRoute = (userService: UserService) => {
 
     //1-4
     app.get("/:formId", (req, res) => {
-        const formId = Number(req.params.formId);
+        const formId = z.coerce.number().parse(req.params.id);
         const dto = userDto.parse(req.body);
         handleExpress(res, async () => userService.getFormWithId(dto, formId));
     });

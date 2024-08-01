@@ -22,7 +22,7 @@ export class FormService {
     constructor(
         private formRepo: IFormRepository,
         private submittedFormService: SubmittedFormService
-    ) {}
+    ) { }
 
     createForm(dto: FormDto) {
         try {
@@ -41,9 +41,9 @@ export class FormService {
     }
 
     addSubmittedForm(dto: CreateSubmittedFormDto, formId: number): boolean {
+        const form = this.readFormById(formId);
         const newSubmittedForm =
             this.submittedFormService.createSubmittedForm(dto);
-        const form = this.readFormById(formId);
         if (!newSubmittedForm) {
             throw new NotFoundError();
         }
