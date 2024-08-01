@@ -144,4 +144,65 @@ describe("Form service test suite", () => {
         ],
         }, newForm.id)).toThrow(new HttpError(409, "Conflict"));
     });
+
+    it('shoud switch form status', () => {
+        const newForm = formService.createForm(
+            {
+                name: "poll",
+                description: "test",
+                elements: [{
+                    name: "age",
+                    type: "number",
+                }],
+            }
+        );
+        expect(formService.switchFormStatus(newForm.id)).toBe("published");
+        expect(formService.switchFormStatus(newForm.id)).toBe("draft");
+    }) 
+
+    it('should get form reponses', () => {
+        const newForm = formService.createForm(
+            {
+                name: "poll",
+                description: "test",
+                elements: [{
+                    name: "age",
+                    type: "number",
+                }],
+            }
+        );
+        formService.switchFormStatus(newForm.id)
+        formService.addSubmittedForm({
+            email: "test@gmail.com",
+            data: [{
+                name: "age",
+                type: "number",
+                value: "20",
+            }],
+        }, newForm.id);
+        const responses = formService.getFormResponses(newForm.id);
+        expect(responses[0].email).toBe("test@gmail.com");
+        expect(responses[0].data[0].value).toBe("20");
+    });
+
+    it("should fail to get responses if form id is not found", () => {
+        expect(() => formService.getFormResponses(1)).toThrow(NotFoundError);
+    });
+
+    it("get form elements", () => {
+        const newForm = formService.createForm(
+            {
+                name: "poll",
+                description: "test",
+                elements: [{
+                    name: "age",
+                    type: "number",
+                }],
+            }
+        );
+
+        const elements = formService.getFormElements(newForm.id);
+        expect(elements[0].name).toBe("age");
+        expect(elements[0].type).toBe("number");
+    })
 });

@@ -167,7 +167,7 @@ export class FormService {
         return form.elements;
     }
 
-    async getFormById(formId: number) {
+    getFormById(formId: number) {
         const form = this.readFormById(formId);
         if (form.status === "draft") {
             throw new ForbiddenError();

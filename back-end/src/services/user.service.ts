@@ -24,7 +24,7 @@ export class UserService {
         private formService: FormService
     ) {}
 
-    async getUserForms(dto: UserDto) {
+    getUserForms(dto: UserDto) {
         try {
             userDto.parse(dto);
         } catch (error) {

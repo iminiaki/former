@@ -41,16 +41,16 @@ describe("User service test suite", () => {
         }).toThrow(NotFoundError);
     });
 
-    it("should get empty array if user have no form", async () => {
-        const result = await userService.getUserForms({
+    it("should get empty array if user have no form", () => {
+        const result = userService.getUserForms({
             name: "nadershah",
             password: "kohenoor",
         });
         expect(result.length).toBe(0);
     });
 
-    it("should add a form to user", async () => {
-        const newForm = await userService.addForm(
+    it("should add a form to user", () => {
+        const newForm = userService.addForm(
             { name: "nadershah", password: "kohenoor" },
             {
                 name: "poll",
@@ -68,7 +68,7 @@ describe("User service test suite", () => {
         expect(newForm).toHaveProperty("description");
         expect(newForm.elements[0].type).toBe("number");
 
-        const forms = await userService.getUserForms({
+        const forms = userService.getUserForms({
             name: "nadershah",
             password: "kohenoor",
         });
