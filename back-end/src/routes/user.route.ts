@@ -18,7 +18,7 @@ export const makeUserRoute = (userService: UserService) => {
         const form_dto = formDto.parse({
             name: req.body.form.name,
             description: req.body.form.description,
-            elements: req.body.form.element,
+            elements: req.body.form.elements,
         });
 
         handleExpress(res, async () =>
@@ -48,7 +48,7 @@ export const makeUserRoute = (userService: UserService) => {
         const form_dto = formDto.parse({
             name: req.body.form.name,
             description: req.body.form.description,
-            elements: req.body.form.element,
+            elements: req.body.form.elements,
         });
         handleExpress(res, async () => userService.addForm(user_dto, form_dto));
     });
