@@ -1,16 +1,19 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import { UserEntity } from "./entities/user.entity";
+import { FormEntity } from "./entities/form.entity";
+import { SubmittedFormEntity } from "./entities/submittedForm.entity";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
+    host: "127.0.0.1",
     port: 5432,
-    username: "test",
-    password: "test",
-    database: "test",
+    username: "postgres",
+    password: "admin",
+    database: "formalo",
     synchronize: true,
     logging: false,
-    entities: [],
+    entities: [UserEntity, FormEntity, SubmittedFormEntity],
     migrations: [],
     subscribers: [],
 });

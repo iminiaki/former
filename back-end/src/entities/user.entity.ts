@@ -1,18 +1,18 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 import { FormEntity } from "./form.entity";
 @Entity("user")
-export class UserEntity{
+export class UserEntity {
     @PrimaryColumn()
-    id!: string
+    id!: string;
 
     @Column()
-    name!: string
+    name!: string;
 
     @Column()
-    password!: string
+    password!: string;
 
     @OneToMany(() => FormEntity, (form) => form.user, {
         cascade: ["insert"],
     })
-    forms! = FormEntity[]
+    forms!: FormEntity[];
 }

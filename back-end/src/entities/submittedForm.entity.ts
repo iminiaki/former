@@ -10,7 +10,7 @@ export class SubmittedFormEntity {
     @Column()
     email!: string;
 
-    @Column()
+    @Column("jsonb")
     data!: FormElementWithValue[];
 
     @ManyToOne(() => FormEntity)

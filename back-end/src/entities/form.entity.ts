@@ -14,11 +14,14 @@ export class FormEntity {
     @Column()
     description!: string;
 
-    @Column()
+    @Column("jsonb")
     elements!: FormElement[];
 
-    @Column()
-    status!: string;
+    @Column({
+        type: "enum",
+        enum: ["published", "draft"],
+    })
+    status!: "published" | "draft";
 
     @OneToMany(
         () => SubmittedFormEntity,

@@ -5,6 +5,7 @@ import { UserRepository } from "./repositories/user.repository";
 import { FormService } from "./services/form.service";
 import { SubmittedFormService } from "./services/submittedForm.service";
 import { UserService } from "./services/user.service";
+import { AppDataSource } from "./data-source";
 
 export const PORT = 3000;
 
@@ -15,7 +16,14 @@ const formService = new FormService(formRepo, submittedFormService);
 const userRepo = new UserRepository();
 const userService = new UserService(userRepo, formService);
 
-const app = makeApp(formService, userService);
-app.listen(PORT, () => {
-    console.log("listening on Port " + PORT);
+AppDataSource.initialize().then((dataSource) => {
+    const app = makeApp(formService, userService);
+    app.listen(PORT, () => {
+        console.log("listening on Port " + PORT);
+    });
 });
+
+// const app = makeApp(formService, userService);
+// app.listen(PORT, () => {
+//     console.log("listening on Port " + PORT);
+// });
