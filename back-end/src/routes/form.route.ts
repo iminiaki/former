@@ -43,7 +43,7 @@ export const makeFormRoute = (formService: FormService) => {
 
     //8
     app.get("/:formId", (req, res) => {
-        const formId = Number(req.params.formId);
+        const formId = z.coerce.number().parse(req.params.formId);
         handleExpress(res, async () => formService.getFormById(formId));
     });
 
