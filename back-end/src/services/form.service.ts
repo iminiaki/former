@@ -100,7 +100,7 @@ export class FormService {
 
         if (responses.length == 0) {
             return {
-                summaryTextQuestions: summarySelwctQuestions,
+                summaryTextQuestions: summaryTextQuestions,
                 summarySelwctQuestions: summarySelwctQuestions,
             };
         }
@@ -133,7 +133,7 @@ export class FormService {
 
         responses.forEach((response) => {
             response.data.forEach((responseData) => {
-                if (responseData.options) {
+                if (responseData.type == "option") {
                     const summaryElement = summarySelwctQuestions.find(
                         (x) => x.name == responseData.name
                     );
@@ -157,7 +157,7 @@ export class FormService {
         });
 
         return {
-            summaryTextQuestions: summarySelwctQuestions,
+            summaryTextQuestions: summaryTextQuestions,
             summarySelwctQuestions: summarySelwctQuestions,
         };
     }

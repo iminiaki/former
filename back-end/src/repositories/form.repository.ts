@@ -68,8 +68,7 @@ export class FormRepository implements IFormRepository {
                 return true;
             }
             return false;
-        }
-        catch (e) {
+        } catch (e) {
             return false;
         }
     }
