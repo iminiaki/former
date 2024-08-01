@@ -55,7 +55,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],
@@ -82,7 +82,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],
@@ -121,7 +121,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],
@@ -169,7 +169,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],
@@ -195,7 +195,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],
@@ -219,7 +219,7 @@ describe("user e2e test sutie", () => {
                             },
                             {
                                 name: "graduated",
-                                type: "option",
+                                type: "radio",
                                 options: ["yes", "no"],
                             },
                         ],

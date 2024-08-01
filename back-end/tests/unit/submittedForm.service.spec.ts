@@ -18,13 +18,13 @@ describe('Submitted form service test suite', () => {
                 data: [{
                     name: "age",
                     type: "number",
-                    value: "20",
+                    value: ["20"],
                 }]
             }
         );
         expect(newSubmittedForm.email).toBe("test@gmail.com");
         expect(newSubmittedForm).toHaveProperty("data");
-        expect(newSubmittedForm.data[0].value).toBe("20");
+        expect(newSubmittedForm.data[0].value[0]).toBe("20");
     });
 
     it('should fail to create a new submitted form if email is already used in another submitted form', () => {
@@ -34,7 +34,7 @@ describe('Submitted form service test suite', () => {
                 data: [{
                     name: "age",
                     type: "number",
-                    value: "20",
+                    value: ["20"],
                 }]
             }
         );
@@ -44,7 +44,7 @@ describe('Submitted form service test suite', () => {
                 data: [{
                     name: "age",
                     type: "number",
-                    value: "21",
+                    value: ["21"],
                 }]
             }
         )).toThrow(ForbiddenError);
@@ -57,7 +57,7 @@ describe('Submitted form service test suite', () => {
                 data: [{
                     name: "age",
                     type: "number",
-                    value: "21",
+                    value: ["21"],
                 }]
             }
         )).toThrow(Error);

@@ -91,7 +91,7 @@ describe('Form test suite', () => {
                     {
                         name: "age",
                         type: "number",
-                        value: "20",
+                        value: ["20"],
                     },
                 ],
             });
@@ -106,12 +106,12 @@ describe('Form test suite', () => {
                     {
                         name: "age",
                         type: "number",
-                        value: "20",
+                        value: ["20"],
                     },
                     {
                         name: "gender",
-                        type: "select",
-                        value: "male",
+                        type: "radio",
+                        value: ["male"],
                     },
                 ],
             });
@@ -125,7 +125,7 @@ describe('Form test suite', () => {
                     {
                         name: "age",
                         type: "number",
-                        value: "20",
+                        value: ["20"],
                     },
                 ],
             });
@@ -139,7 +139,7 @@ describe('Form test suite', () => {
                     {
                         name: "age",
                         type: "number",
-                        value: "20",
+                        value: ["20"],
                     },
                 ],
             });
@@ -147,12 +147,11 @@ describe('Form test suite', () => {
         })
     });
 
-    describe('Getting form response summary', () => {
+    describe('Getting form responses', () => {
         it('should get response', async () => {
             const response = await request(app).get('/form/response/2');
             expect(response.status).toBe(200);
-            expect(response.body.summaryTextQuestions[0].name).toBe('age');
-            expect(response.body.summaryTextQuestions[0].responses[0]).toBe('20')
+            expect(Object.keys(response.body)[0]).toBe("test@gmail.com");
         });
 
         it('should fail to get response if form does not exist', async () => {

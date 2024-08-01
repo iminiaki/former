@@ -17,6 +17,7 @@ import {
     FormTextQuestionResponses,
     OptionsResponses,
 } from "../models/formQuestionResponses";
+import { FormElementWithValue } from "../models/formElementWithValue.model";
 
 export class FormService {
     constructor(
@@ -88,79 +89,84 @@ export class FormService {
             }
         });
 
-        return responses;
+        const responsesDict = responses.reduce((acc, cur) => {
+            acc[cur.email] = cur.data;
+            return acc;
+        }, {} as Record<string, FormElementWithValue[]>);
+
+        return responsesDict;
     }
 
-    getFormResponsesSummary(formId: number) {
-        const responses: SubmittedForm[] = this.getFormResponses(formId);
-        const elements: FormElement[] = this.getFormElements(formId);
-        // const summary: FormQuestionResponses[] = [];
-        const summarySelwctQuestions: FormSelectQuestionResponses[] = [];
-        const summaryTextQuestions: FormTextQuestionResponses[] = [];
+    // getFormResponsesSummary(formId: number) {
+    //     const responses: SubmittedForm[] = this.getFormResponses(formId);
+    //     const elements: FormElement[] = this.getFormElements(formId);
+    //     // const summary: FormQuestionResponses[] = [];
+    //     const summarySelwctQuestions: FormSelectQuestionResponses[] = [];
+    //     const summaryTextQuestions: FormTextQuestionResponses[] = [];
 
-        if (responses.length == 0) {
-            return {
-                summaryTextQuestions: summaryTextQuestions,
-                summarySelwctQuestions: summarySelwctQuestions,
-            };
-        }
+    //     if (responses.length == 0) {
+    //         return {
+    //             summaryTextQuestions: summaryTextQuestions,
+    //             summarySelwctQuestions: summarySelwctQuestions,
+    //         };
+    //     }
 
-        elements.forEach((element) => {
-            if (element.options) {
-                const questionOptions: OptionsResponses[] = [];
-                element.options.forEach((option) => {
-                    questionOptions.push({ option: option, count: 0 });
-                });
-                const question: FormSelectQuestionResponses = {
-                    name: element.name,
-                    responses: questionOptions,
-                };
-                summarySelwctQuestions.push(question);
-            } else {
-                const question: FormTextQuestionResponses = {
-                    name: element.name,
-                    responses: [],
-                };
-                summaryTextQuestions.push(question);
-            }
-        });
+    //     elements.forEach((element) => {
+    //         if (element.options) {
+    //             const questionOptions: OptionsResponses[] = [];
+    //             element.options.forEach((option) => {
+    //                 questionOptions.push({ option: option, count: 0 });
+    //             });
+    //             const question: FormSelectQuestionResponses = {
+    //                 name: element.name,
+    //                 responses: questionOptions,
+    //             };
+    //             summarySelwctQuestions.push(question);
+    //         } else {
+    //             const question: FormTextQuestionResponses = {
+    //                 name: element.name,
+    //                 responses: [],
+    //             };
+    //             summaryTextQuestions.push(question);
+    //         }
+    //     });
 
-        // summary.forEach((question) => {
-        //     responses.forEach((response) => {
-        //         question.
-        //     })
-        // })
+    //     // summary.forEach((question) => {
+    //     //     responses.forEach((response) => {
+    //     //         question.
+    //     //     })
+    //     // })
 
-        responses.forEach((response) => {
-            response.data.forEach((responseData) => {
-                if (responseData.type == "option") {
-                    const summaryElement = summarySelwctQuestions.find(
-                        (x) => x.name == responseData.name
-                    );
-                    if (summaryElement) {
-                        const summaryOption = summaryElement.responses.find(
-                            (x) => x.option == responseData.value
-                        );
-                        if (summaryOption) {
-                            summaryOption.count++;
-                        }
-                    }
-                } else {
-                    const summaryElement = summaryTextQuestions.find(
-                        (x) => x.name == responseData.name
-                    );
-                    if (summaryElement) {
-                        summaryElement.responses.push(responseData.value);
-                    }
-                }
-            });
-        });
+    //     responses.forEach((response) => {
+    //         response.data.forEach((responseData) => {
+    //             if (responseData.type == "option") {
+    //                 const summaryElement = summarySelwctQuestions.find(
+    //                     (x) => x.name == responseData.name
+    //                 );
+    //                 if (summaryElement) {
+    //                     const summaryOption = summaryElement.responses.find(
+    //                         (x) => x.option == responseData.value
+    //                     );
+    //                     if (summaryOption) {
+    //                         summaryOption.count++;
+    //                     }
+    //                 }
+    //             } else {
+    //                 const summaryElement = summaryTextQuestions.find(
+    //                     (x) => x.name == responseData.name
+    //                 );
+    //                 if (summaryElement) {
+    //                     summaryElement.responses.push(responseData.value);
+    //                 }
+    //             }
+    //         });
+    //     });
 
-        return {
-            summaryTextQuestions: summaryTextQuestions,
-            summarySelwctQuestions: summarySelwctQuestions,
-        };
-    }
+    //     return {
+    //         summaryTextQuestions: summaryTextQuestions,
+    //         summarySelwctQuestions: summarySelwctQuestions,
+    //     };
+    // }
 
     getFormElements(formId: number) {
         const form = this.readFormById(formId);
