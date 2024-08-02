@@ -1,5 +1,5 @@
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
-import { ISubmittedFormRepository } from "../repositories/submittedForm.repository";
+import { ISubmittedFormRepository } from "../repositories/db/submittedForm.dbRepository";
 import { ForbiddenError, NotFoundError } from "../utilities/HttpError";
 
 export class SubmittedFormService {

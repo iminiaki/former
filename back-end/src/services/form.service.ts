@@ -72,12 +72,12 @@ export class FormService {
         }
 
         form.submittedForms.forEach(async (submittedForm) => {
-            const submittedForm =
+            const submitted =
                 await this.submittedFormService.readSubmittedFormById(
                     submittedForm.id
                 );
-            if (submittedForm) {
-                responses.push(submittedForm);
+            if (submitted) {
+                responses.push(submitted);
             }
         });
 
