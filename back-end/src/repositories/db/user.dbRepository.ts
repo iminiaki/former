@@ -1,7 +1,21 @@
 import { DataSource, Repository } from "typeorm";
-import { CreateUser, IUserRepository } from "../user.repository";
+import { CreateUser } from "../user.repository";
 import { UserEntity } from "../../entities/user.entity";
 import { FormEntity } from "../../entities/form.entity";
+import { User } from "../../models/user.model";
+
+export interface IUserRepository {
+    createUser(user: CreateUser): Promise<User>;
+    readUser(userId: number): Promise<User | null>;
+    updateUser(user: User): Promise<boolean>;
+    deleteUser(user: User): Promise<boolean>;
+    getAllUsers(): Promise<User[]>;
+    readUserWithNamePassword(
+        name: string,
+        password: string
+    ): Promise<User | null>;
+    addForm(userId: number, formId: number): Promise<boolean>;
+}
 
 export class UserDbRepository implements IUserRepository {
     private userRepo: Repository<UserEntity>;
@@ -9,39 +23,42 @@ export class UserDbRepository implements IUserRepository {
         this.userRepo = appDataSource.getRepository(UserEntity);
     }
 
-    public async createUser(user: CreateUser): Promise<UserEntity> {
+    public async createUser(user: CreateUser): Promise<User> {
         const newUser = this.userRepo.create(user);
         await this.userRepo.save(newUser);
         return newUser;
     }
 
-    public async readUser(userId: number): Promise<UserEntity | null> {
+    public async readUser(userId: number): Promise<User | null> {
         return this.userRepo.findOneBy({ id: userId });
     }
 
-    public async updateUser(user: UserEntity): Promise<boolean> {
+    public async updateUser(user: User): Promise<boolean> {
         try {
-            const result = await this.userRepo.update(user.id, user); 
+            const result = await this.userRepo.update(user.id, user);
             return result.affected !== 0;
-        } catch {
-            return false; 
-        }
-    }
-
-    public async deleteUser(user: UserEntity): Promise<boolean> {
-        try {
-            const result = await this.userRepo.delete(user.id);
-            return result.affected !== 0; 
         } catch {
             return false;
         }
     }
 
-    public async getAllUsers(): Promise<UserEntity[]> {
-        return this.userRepo.find(); 
+    public async deleteUser(user: User): Promise<boolean> {
+        try {
+            const result = await this.userRepo.delete(user.id);
+            return result.affected !== 0;
+        } catch {
+            return false;
+        }
     }
 
-    public async readUserWithNamePassword(name: string, password: string): Promise<UserEntity | null> {
+    public async getAllUsers(): Promise<User[]> {
+        return this.userRepo.find();
+    }
+
+    public async readUserWithNamePassword(
+        name: string,
+        password: string
+    ): Promise<User | null> {
         return this.userRepo.findOneBy({ name, password });
     }
 

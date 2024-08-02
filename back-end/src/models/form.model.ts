@@ -1,4 +1,5 @@
 import { FormElement } from "./formElement.model";
+import { SubmittedForm } from "./submittedForm.model";
 
 export interface Form {
     id: number;
@@ -6,5 +7,5 @@ export interface Form {
     description: string;
     elements: FormElement[];
     status: "published" | "draft";
-    submittedForms: number[];
+    submittedForms: SubmittedForm[];
 }
