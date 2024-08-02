@@ -39,6 +39,6 @@ export class FormEntity {
     )
     submittedForms!: SubmittedFormEntity[];
 
-    @ManyToOne(() => UserEntity, (user) => user.forms)
+    @ManyToOne(() => UserEntity, (user) => user.forms, { onDelete: 'CASCADE'})
     user!: UserEntity;
 }

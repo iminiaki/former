@@ -1,30 +1,32 @@
 import request from 'supertest';
 import { Express } from 'express';
-import { SubmittedFormRepository } from '../../src/repositories/submittedForm.repository';
-import { FormRepository } from '../../src/repositories/form.repository';
 import { SubmittedFormService } from '../../src/services/submittedForm.service';
 import { FormService } from '../../src/services/form.service';
 import { makeApp } from '../../src/api';
 import { Form } from '../../src/models/form.model';
-import { UserRepository } from '../../src/repositories/user.repository';
 import { UserService } from '../../src/services/user.service';
+import { AppDataSource } from '../../src/data-source';
+import { ISubmittedFormRepository, SubmittedFormDbRepository } from '../../src/repositories/db/submittedForm.dbRepository';
+import { FormDbRepository, IFormRepository } from '../../src/repositories/db/form.dbRepository';
+import { IUserRepository, UserDbRepository } from '../../src/repositories/db/user.dbRepository';
 
 describe('Form test suite', () => {
-    let submittedFormRepo: SubmittedFormRepository;
+    let submittedFormRepo: ISubmittedFormRepository;
     let submittedFormService: SubmittedFormService;
-    let formRepo: FormRepository;
+    let formRepo: IFormRepository;
     let formService: FormService;
-    let userRepo: UserRepository;
+    let userRepo: IUserRepository;
     let userService: UserService;
     let app: Express;
     let form: Form;
 
     beforeAll(async () => {
-        submittedFormRepo = new SubmittedFormRepository();
+        const dataSource = await AppDataSource.initialize();
+        submittedFormRepo = new SubmittedFormDbRepository(dataSource);
         submittedFormService = new SubmittedFormService(submittedFormRepo);
-        formRepo = new FormRepository();
+        formRepo = new FormDbRepository(dataSource);
         formService = new FormService(formRepo, submittedFormService);
-        userRepo = new UserRepository();
+        userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
         app = makeApp(formService, userService);
 
@@ -50,6 +52,10 @@ describe('Form test suite', () => {
                 },
             ],
         });
+    });
+
+    afterAll(async () => {
+        await AppDataSource.destroy();
     });
 
     describe('Getting form', () => {

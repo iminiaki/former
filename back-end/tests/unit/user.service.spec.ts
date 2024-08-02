@@ -44,8 +44,15 @@ describe("User service test suite", () => {
 
         userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
+
+        await userRepo.createUser({
+            name: "nadershah",
+            password: "kohenoor"
+        });
     });
+
     afterAll(async () => {
+        await AppDataSource.dropDatabase();
         await AppDataSource.destroy();
     });
 
@@ -90,8 +97,7 @@ describe("User service test suite", () => {
             password: "kohenoor",
         });
 
-        console.log(newForm);
-        console.log(forms);
+        console.log(await userRepo.getAllUsers())
 
         expect(forms[0].name).toBe("poll");
         expect(forms[0].description).toBe("test");
@@ -111,6 +117,7 @@ describe("User service test suite", () => {
     });
 
     it("should pass if every thing is ok", async () => {
+
         const newForm = await userService.addForm(
             { name: "nadershah", password: "kohenoor" },
             {

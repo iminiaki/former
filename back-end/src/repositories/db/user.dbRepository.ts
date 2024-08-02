@@ -7,7 +7,6 @@ import { Form } from "../../models/form.model";
 export interface CreateUser {
     name: string;
     password: string;
-    forms: Form[];
 }
 
 export interface IUserRepository {
@@ -31,6 +30,7 @@ export class UserDbRepository implements IUserRepository {
 
     public async createUser(user: CreateUser): Promise<User> {
         const newUser = this.userRepo.create(user);
+        newUser.forms = [];
         await this.userRepo.save(newUser);
         return newUser;
     }

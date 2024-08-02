@@ -13,6 +13,6 @@ export class SubmittedFormEntity {
     @Column("jsonb")
     data!: FormElementWithValue[];
 
-    @ManyToOne(() => FormEntity)
+    @ManyToOne(() => FormEntity, { onDelete: 'CASCADE'})
     form!: FormEntity;
 }

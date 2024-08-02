@@ -1,3 +1,4 @@
+import { DataSource, getConnection } from "typeorm";
 import { AppDataSource } from "../../src/data-source";
 import {
     ISubmittedFormRepository,
@@ -12,7 +13,7 @@ describe("Submitted form service test suite", () => {
     let submittedFormService: SubmittedFormService;
     let app: Express;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         // submittedFormRepo = new SubmittedFormRepository();
         // submittedFormService = new SubmittedFormService(submittedFormRepo);
         const dataSource = await AppDataSource.initialize();
@@ -20,7 +21,9 @@ describe("Submitted form service test suite", () => {
 
         submittedFormService = new SubmittedFormService(submittedFormRepo);
     });
-    afterAll(async () => {
+
+    afterEach(async () => {
+        await AppDataSource.dropDatabase();
         await AppDataSource.destroy();
     });
 

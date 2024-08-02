@@ -49,6 +49,7 @@ describe("Form service test suite", () => {
         userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
     });
+    
     afterAll(async () => {
         await AppDataSource.destroy();
     });

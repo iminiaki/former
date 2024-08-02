@@ -1,39 +1,38 @@
 import { Express } from "express";
-import {
-    ISubmittedFormRepository,
-    SubmittedFormRepository,
-} from "../../src/repositories/submittedForm.repository";
-import {
-    FormRepository,
-    IFormRepository,
-} from "../../src/repositories/form.repository";
 import { SubmittedFormService } from "../../src/services/submittedForm.service";
 import { FormService } from "../../src/services/form.service";
 import { makeApp } from "../../src/api";
 import { Form } from "../../src/models/form.model";
-import { UserRepository } from "../../src/repositories/user.repository";
 import { UserService } from "../../src/services/user.service";
 import request from "supertest";
-import { beforeEach } from "node:test";
+import { ISubmittedFormRepository, SubmittedFormDbRepository } from "../../src/repositories/db/submittedForm.dbRepository";
+import { FormDbRepository, IFormRepository } from "../../src/repositories/db/form.dbRepository";
+import { IUserRepository, UserDbRepository } from "../../src/repositories/db/user.dbRepository";
+import { AppDataSource } from "../../src/data-source";
 
 describe("user e2e test sutie", () => {
     let submittedFormRepo: ISubmittedFormRepository;
     let submittedFormService: SubmittedFormService;
     let formRepo: IFormRepository;
     let formService: FormService;
-    let userRepo: UserRepository;
+    let userRepo: IUserRepository;
     let userService: UserService;
     let app: Express;
     let form: Form;
 
-    beforeAll(() => {
-        submittedFormRepo = new SubmittedFormRepository();
+    beforeAll(async () => {
+        const dataSource = await AppDataSource.initialize();
+        submittedFormRepo = new SubmittedFormDbRepository(dataSource);
         submittedFormService = new SubmittedFormService(submittedFormRepo);
-        formRepo = new FormRepository();
+        formRepo = new FormDbRepository(dataSource);
         formService = new FormService(formRepo, submittedFormService);
-        userRepo = new UserRepository();
+        userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
         app = makeApp(formService, userService);
+    });
+
+    afterAll(async () => {
+        await AppDataSource.destroy();
     });
 
     describe("addform", () => {

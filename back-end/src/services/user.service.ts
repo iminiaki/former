@@ -41,7 +41,7 @@ export class UserService {
             throw new NotFoundError();
         }
 
-        if (user.forms.length == 0) {
+        if (!user.forms) {
             return userForms;
         }
 
@@ -56,6 +56,7 @@ export class UserService {
             };
             userForms.push(userForm);
         });
+
 
         return userForms;
     }
