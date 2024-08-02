@@ -1,35 +1,52 @@
-import {
-    FormRepository,
-    IFormRepository,
-} from "../../src/repositories/form.repository";
+import { AppDataSource } from "../../src/data-source";
+import { FormDbRepository } from "../../src/repositories/db/form.dbRepository";
 import {
     ISubmittedFormRepository,
-    SubmittedFormRepository,
-} from "../../src/repositories/submittedForm.repository";
+    SubmittedFormDbRepository,
+} from "../../src/repositories/db/submittedForm.dbRepository";
 import {
     IUserRepository,
-    UserRepository,
-} from "../../src/repositories/user.repository";
+    UserDbRepository,
+} from "../../src/repositories/db/user.dbRepository";
+
 import { FormService } from "../../src/services/form.service";
 import { SubmittedFormService } from "../../src/services/submittedForm.service";
 import { UserForm, UserService } from "../../src/services/user.service";
 import { ForbiddenError, NotFoundError } from "../../src/utilities/HttpError";
+import { Express } from "express";
 
 describe("User service test suite", () => {
-    let userRepo: IUserRepository;
-    let formRepo: IFormRepository;
-    let formService: FormService;
-    let userService: UserService;
+    let formRepo: FormDbRepository;
     let submittedFormRepo: ISubmittedFormRepository;
+    let formService: FormService;
     let submittedFormService: SubmittedFormService;
 
-    beforeEach(() => {
-        userRepo = new UserRepository();
-        formRepo = new FormRepository();
-        submittedFormRepo = new SubmittedFormRepository();
+    let userRepo: IUserRepository;
+    let userService: UserService;
+    let app: Express;
+
+    beforeAll(async () => {
+        // userRepo = new UserRepository();
+        // formRepo = new FormRepository();
+        // submittedFormRepo = new SubmittedFormRepository();
+        // submittedFormService = new SubmittedFormService(submittedFormRepo);
+        // formService = new FormService(formRepo, submittedFormService);
+        // userService = new UserService(userRepo, formService);
+
+        const dataSource = await AppDataSource.initialize();
+        submittedFormRepo = new SubmittedFormDbRepository(dataSource);
+
         submittedFormService = new SubmittedFormService(submittedFormRepo);
+
+        formRepo = new FormDbRepository(dataSource);
+
         formService = new FormService(formRepo, submittedFormService);
+
+        userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
+    });
+    afterAll(async () => {
+        await AppDataSource.destroy();
     });
 
     it("should fail to get user forms if there is no user with that name and password", async () => {
@@ -37,8 +54,8 @@ describe("User service test suite", () => {
             userService.getUserForms({
                 name: "naser",
                 password: "naserpass",
-            
-        })).rejects.toThrow(NotFoundError);
+            })
+        ).rejects.toThrow(NotFoundError);
     });
 
     it("should get empty array if user have no form", async () => {
@@ -73,8 +90,8 @@ describe("User service test suite", () => {
             password: "kohenoor",
         });
 
-        console.log(newForm)
-        console.log(forms)
+        console.log(newForm);
+        console.log(forms);
 
         expect(forms[0].name).toBe("poll");
         expect(forms[0].description).toBe("test");

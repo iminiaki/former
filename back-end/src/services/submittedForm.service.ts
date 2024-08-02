@@ -8,13 +8,14 @@ export class SubmittedFormService {
     async createSubmittedForm(dto: CreateSubmittedFormDto) {
         try {
             CreateSubmittedFormDto.parse(dto);
-        } catch (error) {          
+        } catch (error) {
             throw error;
         }
 
-        const submittedForm = await this.submittedFormRepo.readSubmittedFormByEmail(dto.email)
+        const submittedForm =
+            await this.submittedFormRepo.readSubmittedFormByEmail(dto.email);
 
-        if(submittedForm) {
+        if (submittedForm) {
             throw new ForbiddenError();
         }
 
@@ -22,15 +23,15 @@ export class SubmittedFormService {
             email: dto.email,
             data: dto.data,
         };
-        return this.submittedFormRepo.createSubmittedForm(newSubmittedForm)
-    };
+        return this.submittedFormRepo.createSubmittedForm(newSubmittedForm);
+    }
 
     async readSubmittedFormById(id: number) {
-        const submittedForm = await this.submittedFormRepo.readSubmittedFormById(id);
+        const submittedForm =
+            await this.submittedFormRepo.readSubmittedFormById(id);
         if (!submittedForm) {
             throw new NotFoundError();
         }
         return submittedForm;
     }
-
-};
+}

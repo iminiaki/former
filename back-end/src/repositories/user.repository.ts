@@ -1,12 +1,13 @@
 import { UserEntity } from "../entities/user.entity";
+import { Form } from "../models/form.model";
 import { User } from "../models/user.model";
 import { IUserRepository } from "./db/user.dbRepository";
 
-export interface CreateUser {
-    name: string;
-    password: string;
-    forms: Form[];
-}
+// export interface CreateUser {
+//     name: string;
+//     password: string;
+//     forms: Form[];
+// }
 
 // export class UserRepository implements IUserRepository {
 //     private userRepo: User[];

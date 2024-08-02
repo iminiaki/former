@@ -48,7 +48,6 @@ export class FormService {
         if (form.elements.length !== newSubmittedForm.data.length) {
             throw new HttpError(409, "Conflict");
         }
-
         this.formRepo.addSubmittedForm(formId, newSubmittedForm);
         return true;
     }
@@ -57,9 +56,12 @@ export class FormService {
         const form = await this.readFormById(formId);
         if (form.status === "draft") {
             form.status = "published";
+            const result = await this.formRepo.updateForm(form);
             return "published";
         } else {
             form.status = "draft";
+            const result = await this.formRepo.updateForm(form);
+
             return "draft";
         }
     }

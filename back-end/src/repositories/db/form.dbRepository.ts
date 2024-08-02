@@ -17,7 +17,7 @@ export interface IFormRepository {
     readForm(formId: number): Promise<Form | null>;
     addSubmittedForm(
         formId: number,
-        submittedForm: CreateSubmittedForm
+        submittedForm: SubmittedForm
     ): Promise<boolean>;
     updateForm(form: Form): Promise<boolean>;
     deleteForm(form: Form): Promise<boolean>;
@@ -57,9 +57,10 @@ export class FormDbRepository implements IFormRepository {
 
     public async addSubmittedForm(
         formId: number,
-        submittedForm: CreateSubmittedForm
+        submittedForm: SubmittedForm
     ): Promise<boolean> {
         const formEntity = await this.formRepo.findOneBy({ id: formId });
+
         if (formEntity) {
             await this.formRepo.save({
                 ...formEntity,

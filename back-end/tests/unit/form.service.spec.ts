@@ -1,9 +1,14 @@
-import { FormRepository } from "../../src/repositories/form.repository";
-import { SubmittedFormRepository } from "../../src/repositories/submittedForm.repository";
+import { DataSource } from "typeorm";
+import { AppDataSource } from "../../src/data-source";
+import { FormDbRepository } from "../../src/repositories/db/form.dbRepository";
+import {
+    ISubmittedFormRepository,
+    SubmittedFormDbRepository,
+} from "../../src/repositories/db/submittedForm.dbRepository";
 import {
     IUserRepository,
-    UserRepository,
-} from "../../src/repositories/user.repository";
+    UserDbRepository,
+} from "../../src/repositories/db/user.dbRepository";
 import { FormService } from "../../src/services/form.service";
 import { SubmittedFormService } from "../../src/services/submittedForm.service";
 import { UserService } from "../../src/services/user.service";
@@ -12,24 +17,40 @@ import {
     HttpError,
     NotFoundError,
 } from "../../src/utilities/HttpError";
+import { Express } from "express";
 
 describe("Form service test suite", () => {
-    let formRepo: FormRepository;
-    let submittedFormRepo: SubmittedFormRepository;
+    let formRepo: FormDbRepository;
+    let submittedFormRepo: ISubmittedFormRepository;
     let formService: FormService;
     let submittedFormService: SubmittedFormService;
 
     let userRepo: IUserRepository;
     let userService: UserService;
+    let app: Express;
 
-    beforeEach(() => {
-        formRepo = new FormRepository();
-        submittedFormRepo = new SubmittedFormRepository();
+    beforeAll(async () => {
+        // formRepo = new FormRepository();
+        // submittedFormRepo = new SubmittedFormRepository();
+        // submittedFormService = new SubmittedFormService(submittedFormRepo);
+        // formService = new FormService(formRepo, submittedFormService);
+
+        // userRepo = new UserRepository();
+        // userService = new UserService(userRepo, formService);
+        const dataSource = await AppDataSource.initialize();
+        submittedFormRepo = new SubmittedFormDbRepository(dataSource);
+
         submittedFormService = new SubmittedFormService(submittedFormRepo);
+
+        formRepo = new FormDbRepository(dataSource);
+
         formService = new FormService(formRepo, submittedFormService);
 
-        userRepo = new UserRepository();
+        userRepo = new UserDbRepository(dataSource);
         userService = new UserService(userRepo, formService);
+    });
+    afterAll(async () => {
+        await AppDataSource.destroy();
     });
 
     it("should add a new form", async () => {
@@ -55,13 +76,13 @@ describe("Form service test suite", () => {
                 description: "test",
                 elements: [],
             })
-        ).rejects.toThrow(Error);
+        ).toThrowError(Error);
     });
 
     it("should add a submitted form to form", async () => {
         const newForm = await formService.createForm({
-            name: "poll",
-            description: "test",
+            name: "poll3",
+            description: "test3",
             elements: [
                 {
                     name: "age",
@@ -69,11 +90,11 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        formService.switchFormStatus(newForm.id);
+        await formService.switchFormStatus(newForm.id);
         expect(
             await formService.addSubmittedForm(
                 {
-                    email: "test@gmail.com",
+                    email: "test11@gmail.com",
                     data: [
                         {
                             name: "age",
@@ -102,7 +123,7 @@ describe("Form service test suite", () => {
         await expect(() =>
             formService.addSubmittedForm(
                 {
-                    email: "test@gmail.com",
+                    email: "test66@gmail.com",
                     data: [
                         {
                             name: "age",
@@ -120,7 +141,7 @@ describe("Form service test suite", () => {
         await expect(() =>
             formService.addSubmittedForm(
                 {
-                    email: "test@gmail.com",
+                    email: "test99@gmail.com",
                     data: [
                         {
                             name: "age",
@@ -145,11 +166,11 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        formService.switchFormStatus(newForm.id);
+        await formService.switchFormStatus(newForm.id);
         await expect(() =>
             formService.addSubmittedForm(
                 {
-                    email: "test@gmail.com",
+                    email: "test677@gmail.com",
                     data: [
                         {
                             name: "age",
@@ -180,13 +201,15 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        expect(await formService.switchFormStatus(newForm.id)).toBe("published");
+        expect(await formService.switchFormStatus(newForm.id)).toBe(
+            "published"
+        );
         expect(await formService.switchFormStatus(newForm.id)).toBe("draft");
     });
 
     it("should get form reponses", async () => {
         const newForm = await formService.createForm({
-            name: "poll",
+            name: "ffffff",
             description: "test",
             elements: [
                 {
@@ -198,7 +221,7 @@ describe("Form service test suite", () => {
         await formService.switchFormStatus(newForm.id);
         await formService.addSubmittedForm(
             {
-                email: "test@gmail.com",
+                email: "test343334@gmail.com",
                 data: [
                     {
                         name: "age",
@@ -210,11 +233,13 @@ describe("Form service test suite", () => {
             newForm.id
         );
         const responses = await formService.getFormResponses(newForm.id);
-        expect(Object.keys(responses)[0]).toBe("test@gmail.com");
+        expect(Object.keys(responses)[0]).toBe("test343334@gmail.com");
     });
 
     it("should fail to get responses if form id is not found", async () => {
-        await expect(() => formService.getFormResponses(1)).rejects.toThrow(NotFoundError);
+        await expect(() => formService.getFormResponses(100)).rejects.toThrow(
+            NotFoundError
+        );
     });
 
     it("get form elements", async () => {

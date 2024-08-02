@@ -1,10 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FormElementWithValue } from "../models/formElementWithValue.model";
 import { FormEntity } from "./form.entity";
 
 @Entity("submittedForms")
 export class SubmittedFormEntity {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id!: number;
 
     @Column()

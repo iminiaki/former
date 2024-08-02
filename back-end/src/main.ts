@@ -1,7 +1,5 @@
 import { makeApp } from "./api";
-import { FormRepository } from "./repositories/form.repository";
-import { SubmittedFormRepository } from "./repositories/submittedForm.repository";
-import { UserRepository } from "./repositories/user.repository";
+
 import { FormService } from "./services/form.service";
 import { SubmittedFormService } from "./services/submittedForm.service";
 import { UserService } from "./services/user.service";
@@ -13,23 +11,23 @@ import { UserDbRepository } from "./repositories/db/user.dbRepository";
 export const PORT = 3000;
 
 AppDataSource.initialize().then((dataSource) => {
-    const submittedFormRepo = new SubmittedFormRepository();
-    // const submittedFormDbRepo = new SubmittedFormDbRepository(dataSource)
+    // const submittedFormRepo = new SubmittedFormRepository();
+    const submittedFormDbRepo = new SubmittedFormDbRepository(dataSource);
 
-    const submittedFormService = new SubmittedFormService(submittedFormRepo);
-    // const submittedFormService = new SubmittedFormService(submittedFormDbRepo);
+    // const submittedFormService = new SubmittedFormService(submittedFormRepo);
+    const submittedFormService = new SubmittedFormService(submittedFormDbRepo);
 
-    const formRepo = new FormRepository();
-    // const formDbRepo = new FormDbRepository(dataSource);
+    // const formRepo = new FormRepository();
+    const formDbRepo = new FormDbRepository(dataSource);
 
-    const formService = new FormService(formRepo, submittedFormService);
-    // const formService = new FormService(formDbRepo, submittedFormService);
+    // const formService = new FormService(formRepo, submittedFormService);
+    const formService = new FormService(formDbRepo, submittedFormService);
 
-    const userRepo = new UserRepository();
-    // const userDbRepo = new UserDbRepository(dataSource);
+    // const userRepo = new UserRepository();
+    const userDbRepo = new UserDbRepository(dataSource);
 
-    const userService = new UserService(userRepo, formService);
-    // const userService = new UserService(userDbRepo, formService);
+    // const userService = new UserService(userRepo, formService);
+    const userService = new UserService(userDbRepo, formService);
 
     const app = makeApp(formService, userService);
     app.listen(PORT, () => {
