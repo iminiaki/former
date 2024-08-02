@@ -2,6 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { UserEntity } from "../../entities/user.entity";
 import { FormEntity } from "../../entities/form.entity";
 import { User } from "../../models/user.model";
+import { Form } from "../../models/form.model";
 
 export interface CreateUser {
     name: string;

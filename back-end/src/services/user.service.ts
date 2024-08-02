@@ -3,7 +3,7 @@ import { userDto, UserDto } from "../dtos/getUserForms.dto";
 import { FormEntity } from "../entities/form.entity";
 import { Form } from "../models/form.model";
 import { FormElement } from "../models/formElement.model";
-import { IUserRepository } from "../repositories/user.repository";
+import { IUserRepository } from "../repositories/db/user.dbRepository";
 import { ForbiddenError, NotFoundError } from "../utilities/HttpError";
 import { FormService } from "./form.service";
 
@@ -45,13 +45,7 @@ export class UserService {
             return userForms;
         }
 
-        const fullUserForms: Form[] | FormEntity[] = [];
-        user.forms.forEach(async (formId) => {
-            const form: Form | FormEntity = await this.formService.readFormById(formId);
-            if (form) {
-                fullUserForms.push(form);
-            }
-        });
+        const fullUserForms: Form[] = user.forms
 
         fullUserForms.map((form) => {
             const userForm: UserForm = {
@@ -108,9 +102,11 @@ export class UserService {
             throw new NotFoundError();
         }
 
-        if (!user.forms.includes(formId)) {
-            throw new ForbiddenError();
-        }
+        user.forms.forEach((form) => {
+            if(form.id == formId) {
+                throw new ForbiddenError();
+            }
+        })
 
         const readedForm = await this.formService.readFormById(formId);
         if (!readedForm) {
@@ -141,9 +137,11 @@ export class UserService {
             throw new NotFoundError();
         }
 
-        if (!user.forms.includes(formId)) {
-            throw new ForbiddenError();
-        }
+        user.forms.forEach((form) => {
+            if(form.id == formId) {
+                throw new ForbiddenError();
+            }
+        })
 
         const readedForm = await this.formService.readFormById(formId);
         if (!readedForm) {
