@@ -6,7 +6,7 @@ import { SubmittedFormEntity } from "./entities/submittedForm.entity";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "127.0.0.1",
+    host: "localhost",
     port: 5432,
     username: "postgres",
     password: "admin",
