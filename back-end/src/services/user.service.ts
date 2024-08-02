@@ -1,6 +1,6 @@
-import { read } from "fs";
 import { FormDto, formDto } from "../dtos/createForm.dto";
 import { userDto, UserDto } from "../dtos/getUserForms.dto";
+import { FormEntity } from "../entities/form.entity";
 import { Form } from "../models/form.model";
 import { FormElement } from "../models/formElement.model";
 import { IUserRepository } from "../repositories/user.repository";
@@ -24,7 +24,7 @@ export class UserService {
         private formService: FormService
     ) {}
 
-    getUserForms(dto: UserDto) {
+    async getUserForms(dto: UserDto) {
         try {
             userDto.parse(dto);
         } catch (error) {
@@ -33,7 +33,7 @@ export class UserService {
 
         const userForms: UserForm[] = [];
 
-        const user = this.userRepo.readUserWithNamePassword(
+        const user = await this.userRepo.readUserWithNamePassword(
             dto.name,
             dto.password
         );
@@ -45,9 +45,9 @@ export class UserService {
             return userForms;
         }
 
-        const fullUserForms: Form[] = [];
-        user.forms.forEach((formId) => {
-            const form = this.formService.readFormById(formId);
+        const fullUserForms: Form[] | FormEntity[] = [];
+        user.forms.forEach(async (formId) => {
+            const form: Form | FormEntity = await this.formService.readFormById(formId);
             if (form) {
                 fullUserForms.push(form);
             }
@@ -66,14 +66,14 @@ export class UserService {
         return userForms;
     }
 
-    addForm(user_dto: UserDto, dto: FormDto) {
+    async addForm(user_dto: UserDto, dto: FormDto) {
         try {
             userDto.parse(user_dto);
         } catch (error) {
             throw error;
         }
 
-        const user = this.userRepo.readUserWithNamePassword(
+        const user = await this.userRepo.readUserWithNamePassword(
             user_dto.name,
             user_dto.password
         );
@@ -82,7 +82,7 @@ export class UserService {
         }
 
         try {
-            const createdForm: Form = this.formService.createForm(dto);
+            const createdForm: Form | FormEntity = await this.formService.createForm(dto);
             if (!this.userRepo.addForm(user.id, createdForm.id)) {
                 throw new NotFoundError();
             }
@@ -93,14 +93,14 @@ export class UserService {
         }
     }
 
-    getFormWithId(user_dto: UserDto, formId: number): UserFormWithElements {
+    async getFormWithId(user_dto: UserDto, formId: number) {
         try {
             userDto.parse(user_dto);
         } catch (error) {
             throw error;
         }
 
-        const user = this.userRepo.readUserWithNamePassword(
+        const user = await this.userRepo.readUserWithNamePassword(
             user_dto.name,
             user_dto.password
         );
@@ -112,7 +112,7 @@ export class UserService {
             throw new ForbiddenError();
         }
 
-        const readedForm = this.formService.readFormById(formId);
+        const readedForm = await this.formService.readFormById(formId);
         if (!readedForm) {
             throw new NotFoundError();
         }
@@ -126,14 +126,14 @@ export class UserService {
         };
     }
 
-    updateForm(user_dto: UserDto, formId: number, formDto: FormDto) {
+    async updateForm(user_dto: UserDto, formId: number, formDto: FormDto) {
         try {
             userDto.parse(user_dto);
         } catch (error) {
             throw error;
         }
 
-        const user = this.userRepo.readUserWithNamePassword(
+        const user = await this.userRepo.readUserWithNamePassword(
             user_dto.name,
             user_dto.password
         );
@@ -145,7 +145,7 @@ export class UserService {
             throw new ForbiddenError();
         }
 
-        const readedForm = this.formService.readFormById(formId);
+        const readedForm = await this.formService.readFormById(formId);
         if (!readedForm) {
             throw new NotFoundError();
         }
@@ -155,7 +155,7 @@ export class UserService {
         }
 
         try {
-            const updateResult = this.formService.updateForm({
+            const updateResult = await this.formService.updateForm({
                 id: formId,
                 ...formDto,
                 status: readedForm.status,

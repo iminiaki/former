@@ -1,6 +1,6 @@
+import { FormEntity } from "../entities/form.entity";
 import { Form } from "../models/form.model";
 import { FormElement } from "../models/formElement.model";
-import { SubmittedForm } from "../models/submittedForm.model";
 
 export interface CreateForm {
     name: string;
@@ -9,12 +9,12 @@ export interface CreateForm {
 }
 
 export interface IFormRepository {
-    createForm(form: CreateForm): Form;
-    readForm(formId: number): Form | undefined;
-    addSubmittedForm(formId: number, submittedFormId: number): boolean;
-    updateForm(form: Form): boolean;
-    deleteForm(form: Form): boolean;
-    getAllForms(): Form[];
+    createForm(form: CreateForm): Promise<Form | FormEntity>;
+    readForm(formId: number): Promise<Form | FormEntity | undefined | null>;
+    addSubmittedForm(formId: number, submittedFormId: number): Promise<boolean>;
+    updateForm(form: Form | FormEntity): Promise<boolean>;
+    deleteForm(form: Form | FormEntity): Promise<boolean>;
+    getAllForms(): Promise<Form[] | FormEntity[]>;
 }
 
 export class FormRepository implements IFormRepository {
@@ -28,7 +28,7 @@ export class FormRepository implements IFormRepository {
         return this.formRepo.length + 1;
     }
 
-    public createForm(form: CreateForm): Form {
+    public async createForm(form: CreateForm): Promise<Form> {
         const submittedForms: number[] = [];
         const status = "draft";
         const newForm: Form = {
@@ -41,13 +41,13 @@ export class FormRepository implements IFormRepository {
         return newForm;
     }
 
-    public readForm(formId: number): Form | undefined {
+    public async readForm(formId: number): Promise<Form | undefined> {
         return this.formRepo.find((x) => x.id == formId);
     }
 
-    public updateForm(form: Form): boolean {
+    public async updateForm(form: Form): Promise<boolean> {
         try {
-            const readForm = this.readForm(form.id);
+            const readForm = await this.readForm(form.id);
             if (readForm) {
                 readForm.name = form.name;
                 readForm.description = form.description;
@@ -60,9 +60,9 @@ export class FormRepository implements IFormRepository {
         }
     }
 
-    public addSubmittedForm(formId: number, submittedFormId: number): boolean {
+    public async addSubmittedForm(formId: number, submittedFormId: number): Promise<boolean> {
         try {
-            const readForm = this.readForm(formId);
+            const readForm = await this.readForm(formId);
             if (readForm) {
                 readForm.submittedForms.push(submittedFormId);
                 return true;
@@ -73,7 +73,7 @@ export class FormRepository implements IFormRepository {
         }
     }
 
-    public deleteForm(form: Form): boolean {
+    public async deleteForm(form: Form): Promise<boolean> {
         try {
             const index = this.formRepo.indexOf(form);
             if (index >= 0) {
@@ -85,7 +85,7 @@ export class FormRepository implements IFormRepository {
             return false;
         }
     }
-    public getAllForms(): Form[] {
+    public async getAllForms(): Promise<Form[]> {
         return this.formRepo;
     }
 }

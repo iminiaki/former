@@ -7,12 +7,12 @@ export interface CreateSubmittedForm {
 }
 
 export interface ISubmittedFormRepository {
-    createSubmittedForm(submittedForm: CreateSubmittedForm): SubmittedForm;
-    readSubmittedFormById(submittedFormId: number): SubmittedForm | undefined;
-    readSubmittedFormByEmail(submittedFormEmail: string): SubmittedForm | undefined; 
-    updateSubmittedForm(submittedForm: SubmittedForm): boolean;
-    deleteSubmittedForm(submittedForm: SubmittedForm): boolean;
-    getAllSubmittedForm(): SubmittedForm[];
+    createSubmittedForm(submittedForm: CreateSubmittedForm): Promise<SubmittedForm>;
+    readSubmittedFormById(submittedFormId: number): Promise<SubmittedForm | undefined | null>;
+    readSubmittedFormByEmail(submittedFormEmail: string): Promise<SubmittedForm | undefined | null>; 
+    updateSubmittedForm(submittedForm: SubmittedForm): Promise<boolean>;
+    deleteSubmittedForm(submittedForm: SubmittedForm): Promise<boolean>;
+    getAllSubmittedForm(): Promise<SubmittedForm[]>;
 }
 
 export class SubmittedFormRepository implements ISubmittedFormRepository {
@@ -26,9 +26,9 @@ export class SubmittedFormRepository implements ISubmittedFormRepository {
         return this.submmitedFormRepo.length + 1;
     }
 
-    public createSubmittedForm(
+    public async createSubmittedForm(
         submittedForm: CreateSubmittedForm
-    ): SubmittedForm {
+    ): Promise<SubmittedForm> {
         const newSubmittedForm: SubmittedForm = {
             ...submittedForm,
             id: this.getId(),
@@ -37,21 +37,21 @@ export class SubmittedFormRepository implements ISubmittedFormRepository {
         return newSubmittedForm;
     }
 
-    public readSubmittedFormById(
+    public async readSubmittedFormById(
         submittedFormId: number
-    ): SubmittedForm | undefined {
+    ): Promise<SubmittedForm | undefined> {
         return this.submmitedFormRepo.find((x) => x.id == submittedFormId);
     }
 
-    public readSubmittedFormByEmail(
+    public async readSubmittedFormByEmail(
         submittedFormEmail: string
-    ): SubmittedForm | undefined {
+    ): Promise<SubmittedForm | undefined> {
         return this.submmitedFormRepo.find((x) => x.email === submittedFormEmail);
     }
 
-    public updateSubmittedForm(submittedForm: SubmittedForm): boolean {
+    public async updateSubmittedForm(submittedForm: SubmittedForm): Promise<boolean> {
         try {
-            const readSubmittedForm = this.readSubmittedFormById(submittedForm.id);
+            const readSubmittedForm = await this.readSubmittedFormById(submittedForm.id);
             if (readSubmittedForm) {
                 readSubmittedForm.email = submittedForm.email;
                 readSubmittedForm.data = submittedForm.data;
@@ -63,7 +63,7 @@ export class SubmittedFormRepository implements ISubmittedFormRepository {
         }
     }
 
-    public deleteSubmittedForm(submittedForm: SubmittedForm): boolean {
+    public async deleteSubmittedForm(submittedForm: SubmittedForm): Promise<boolean> {
         try {
             const index = this.submmitedFormRepo.indexOf(submittedForm);
             if (index >= 0) {
@@ -76,7 +76,7 @@ export class SubmittedFormRepository implements ISubmittedFormRepository {
         }
     }
 
-    public getAllSubmittedForm(): SubmittedForm[] {
+    public async getAllSubmittedForm(): Promise<SubmittedForm[]> {
         return this.submmitedFormRepo;
     }
 }

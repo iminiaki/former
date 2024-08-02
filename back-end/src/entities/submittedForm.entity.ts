@@ -5,7 +5,7 @@ import { FormEntity } from "./form.entity";
 @Entity("submittedForms")
 export class SubmittedFormEntity {
     @PrimaryColumn()
-    id!: string;
+    id!: number;
 
     @Column()
     email!: string;

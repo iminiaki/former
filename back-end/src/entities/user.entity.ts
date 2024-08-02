@@ -3,7 +3,7 @@ import { FormEntity } from "./form.entity";
 @Entity("user")
 export class UserEntity {
     @PrimaryColumn()
-    id!: string;
+    id!: number;
 
     @Column()
     name!: string;

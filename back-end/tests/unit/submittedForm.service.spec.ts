@@ -11,8 +11,8 @@ describe('Submitted form service test suite', () => {
         submittedFormService = new SubmittedFormService(submittedFormRepo);
     });
 
-    it('should create a new submitted form', () => {
-        const newSubmittedForm = submittedFormService.createSubmittedForm(
+    it('should create a new submitted form', async () => {
+        const newSubmittedForm = await submittedFormService.createSubmittedForm(
             {
                 email: "test@gmail.com",
                 data: [{
@@ -27,8 +27,8 @@ describe('Submitted form service test suite', () => {
         expect(newSubmittedForm.data[0].value[0]).toBe("20");
     });
 
-    it('should fail to create a new submitted form if email is already used in another submitted form', () => {
-        submittedFormService.createSubmittedForm(
+    it('should fail to create a new submitted form if email is already used in another submitted form', async () => {
+        await submittedFormService.createSubmittedForm(
             {
                 email: "test@gmail.com",
                 data: [{
@@ -38,7 +38,7 @@ describe('Submitted form service test suite', () => {
                 }]
             }
         );
-        expect(() => submittedFormService.createSubmittedForm(
+        await expect(submittedFormService.createSubmittedForm(
             {
                 email: "test@gmail.com",
                 data: [{
@@ -47,11 +47,11 @@ describe('Submitted form service test suite', () => {
                     value: ["21"],
                 }]
             }
-        )).toThrow(ForbiddenError);
+        )).rejects.toThrow(ForbiddenError);
     });
 
-    it('should fail to create a new submitted form if email format is incorrect', () => {
-        expect(() => submittedFormService.createSubmittedForm(
+    it('should fail to create a new submitted form if email format is incorrect', async () => {
+        await expect(() => submittedFormService.createSubmittedForm(
             {
                 email: "wrong email format",
                 data: [{
@@ -60,6 +60,6 @@ describe('Submitted form service test suite', () => {
                     value: ["21"],
                 }]
             }
-        )).toThrow(Error);
+        )).rejects.toThrow(Error);
     })
 });

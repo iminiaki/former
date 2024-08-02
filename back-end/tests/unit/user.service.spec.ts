@@ -32,25 +32,25 @@ describe("User service test suite", () => {
         userService = new UserService(userRepo, formService);
     });
 
-    it("should fail to get user forms if there is no user with that name and password", () => {
-        expect(() => {
+    it("should fail to get user forms if there is no user with that name and password", async () => {
+        await expect(
             userService.getUserForms({
                 name: "naser",
                 password: "naserpass",
-            });
-        }).toThrow(NotFoundError);
+            
+        })).rejects.toThrow(NotFoundError);
     });
 
-    it("should get empty array if user have no form", () => {
-        const result = userService.getUserForms({
+    it("should get empty array if user have no form", async () => {
+        const result = await userService.getUserForms({
             name: "nadershah",
             password: "kohenoor",
         });
         expect(result.length).toBe(0);
     });
 
-    it("should add a form to user", () => {
-        const newForm = userService.addForm(
+    it("should add a form to user", async () => {
+        const newForm = await userService.addForm(
             { name: "nadershah", password: "kohenoor" },
             {
                 name: "poll",
@@ -68,18 +68,21 @@ describe("User service test suite", () => {
         expect(newForm).toHaveProperty("description");
         expect(newForm.elements[0].type).toBe("number");
 
-        const forms = userService.getUserForms({
+        const forms = await userService.getUserForms({
             name: "nadershah",
             password: "kohenoor",
         });
+
+        console.log(newForm)
+        console.log(forms)
 
         expect(forms[0].name).toBe("poll");
         expect(forms[0].description).toBe("test");
         expect(forms[0].status).toBe("draft");
     });
 
-    it("should fail if user does not have specified form id", () => {
-        expect(() =>
+    it("should fail if user does not have specified form id", async () => {
+        await expect(
             userService.getFormWithId(
                 {
                     name: "nadershah",
@@ -87,11 +90,11 @@ describe("User service test suite", () => {
                 },
                 2
             )
-        ).toThrow(ForbiddenError);
+        ).rejects.toThrow(ForbiddenError);
     });
 
-    it("should pass if every thing is ok", () => {
-        const newForm = userService.addForm(
+    it("should pass if every thing is ok", async () => {
+        const newForm = await userService.addForm(
             { name: "nadershah", password: "kohenoor" },
             {
                 name: "poll",
@@ -105,7 +108,7 @@ describe("User service test suite", () => {
             }
         );
 
-        const formInfo = userService.getFormWithId(
+        const formInfo = await userService.getFormWithId(
             {
                 name: "nadershah",
                 password: "kohenoor",
@@ -116,8 +119,8 @@ describe("User service test suite", () => {
         expect(formInfo).toHaveProperty("elements");
     });
 
-    it("should pass if everything is ok in update form", () => {
-        const newForm = userService.addForm(
+    it("should pass if everything is ok in update form", async () => {
+        const newForm = await userService.addForm(
             { name: "nadershah", password: "kohenoor" },
             {
                 name: "poll",
@@ -131,7 +134,7 @@ describe("User service test suite", () => {
             }
         );
 
-        const editedForm = userService.updateForm(
+        const editedForm = await userService.updateForm(
             { name: "nadershah", password: "kohenoor" },
             newForm.id,
             {

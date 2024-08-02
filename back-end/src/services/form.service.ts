@@ -1,4 +1,3 @@
-import { response } from "express";
 import { FormDto, formDto } from "../dtos/createForm.dto";
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
 import { Form } from "../models/form.model";
@@ -10,13 +9,6 @@ import {
     NotFoundError,
 } from "../utilities/HttpError";
 import { SubmittedFormService } from "./submittedForm.service";
-import { FormElement } from "../models/formElement.model";
-import {
-    FormQuestionResponses,
-    FormSelectQuestionResponses,
-    FormTextQuestionResponses,
-    OptionsResponses,
-} from "../models/formQuestionResponses";
 import { FormElementWithValue } from "../models/formElementWithValue.model";
 
 export class FormService {
@@ -41,10 +33,10 @@ export class FormService {
         return this.formRepo.createForm(newForm);
     }
 
-    addSubmittedForm(dto: CreateSubmittedFormDto, formId: number): boolean {
-        const form = this.readFormById(formId);
+    async addSubmittedForm(dto: CreateSubmittedFormDto, formId: number) {
+        const form = await this.readFormById(formId);
         const newSubmittedForm =
-            this.submittedFormService.createSubmittedForm(dto);
+            await this.submittedFormService.createSubmittedForm(dto);
         if (!newSubmittedForm) {
             throw new NotFoundError();
         }
@@ -61,8 +53,8 @@ export class FormService {
         return true;
     }
 
-    switchFormStatus(formId: number) {
-        const form = this.readFormById(formId);
+    async switchFormStatus(formId: number) {
+        const form = await this.readFormById(formId);
         if (form.status === "draft") {
             form.status = "published";
             return "published";
@@ -72,16 +64,16 @@ export class FormService {
         }
     }
 
-    getFormResponses(formId: number) {
-        const form = this.readFormById(formId);
+    async getFormResponses(formId: number) {
+        const form = await this.readFormById(formId);
         const responses: SubmittedForm[] = [];
         if (form.submittedForms.length == 0) {
             return responses;
         }
 
-        form.submittedForms.forEach((submittedFormId) => {
+        form.submittedForms.forEach(async (submittedFormId) => {
             const submittedForm =
-                this.submittedFormService.readSubmittedFormById(
+                await this.submittedFormService.readSubmittedFormById(
                     submittedFormId
                 );
             if (submittedForm) {
@@ -168,13 +160,13 @@ export class FormService {
     //     };
     // }
 
-    getFormElements(formId: number) {
-        const form = this.readFormById(formId);
+    async getFormElements(formId: number) {
+        const form = await this.readFormById(formId);
         return form.elements;
     }
 
-    getFormById(formId: number) {
-        const form = this.readFormById(formId);
+    async getFormById(formId: number) {
+        const form = await this.readFormById(formId);
         if (form.status === "draft") {
             throw new ForbiddenError();
         }
@@ -187,16 +179,17 @@ export class FormService {
         };
     }
 
-    readFormById(formId: number) {
-        const form = this.formRepo.readForm(formId);
+    async readFormById(formId: number) {
+        const form = await this.formRepo.readForm(formId);
         if (!form) {
             throw new NotFoundError();
         }
         return form;
     }
 
-    updateForm(form: Form): boolean {
-        if (this.formRepo.updateForm(form)) {
+    async updateForm(form: Form) {
+        const updateStatus = await this.formRepo.updateForm(form)
+        if (updateStatus) {
             return true;
         }
         return false;

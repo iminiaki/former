@@ -32,8 +32,8 @@ describe("Form service test suite", () => {
         userService = new UserService(userRepo, formService);
     });
 
-    it("should add a new form", () => {
-        const newForm = formService.createForm({
+    it("should add a new form", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -48,18 +48,18 @@ describe("Form service test suite", () => {
         expect(newForm.elements[0].type).toBe("number");
     });
 
-    it("should fail to create a new form if there are no elements", () => {
-        expect(() =>
+    it("should fail to create a new form if there are no elements", async () => {
+        await expect(() =>
             formService.createForm({
                 name: "poll",
                 description: "test",
                 elements: [],
             })
-        ).toThrow(Error);
+        ).rejects.toThrow(Error);
     });
 
-    it("should add a submitted form to form", () => {
-        const newForm = formService.createForm({
+    it("should add a submitted form to form", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -71,7 +71,7 @@ describe("Form service test suite", () => {
         });
         formService.switchFormStatus(newForm.id);
         expect(
-            formService.addSubmittedForm(
+            await formService.addSubmittedForm(
                 {
                     email: "test@gmail.com",
                     data: [
@@ -88,8 +88,8 @@ describe("Form service test suite", () => {
         expect(newForm.submittedForms.length).toBe(1);
     });
 
-    it("should fail to add a submitted form to a draft form", () => {
-        const newForm = formService.createForm({
+    it("should fail to add a submitted form to a draft form", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -99,7 +99,7 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        expect(() =>
+        await expect(() =>
             formService.addSubmittedForm(
                 {
                     email: "test@gmail.com",
@@ -113,11 +113,11 @@ describe("Form service test suite", () => {
                 },
                 newForm.id
             )
-        ).toThrow(ForbiddenError);
+        ).rejects.toThrow(ForbiddenError);
     });
 
-    it("should fail to add a submitted form if it does not exist", () => {
-        expect(() =>
+    it("should fail to add a submitted form if it does not exist", async () => {
+        await expect(() =>
             formService.addSubmittedForm(
                 {
                     email: "test@gmail.com",
@@ -131,11 +131,11 @@ describe("Form service test suite", () => {
                 },
                 1
             )
-        ).toThrow(NotFoundError);
+        ).rejects.toThrow(NotFoundError);
     });
 
-    it("should fail to add a submitted form to form if there is conflict in elements", () => {
-        const newForm = formService.createForm({
+    it("should fail to add a submitted form to form if there is conflict in elements", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -146,7 +146,7 @@ describe("Form service test suite", () => {
             ],
         });
         formService.switchFormStatus(newForm.id);
-        expect(() =>
+        await expect(() =>
             formService.addSubmittedForm(
                 {
                     email: "test@gmail.com",
@@ -166,11 +166,11 @@ describe("Form service test suite", () => {
                 },
                 newForm.id
             )
-        ).toThrow(new HttpError(409, "Conflict"));
+        ).rejects.toThrow(new HttpError(409, "Conflict"));
     });
 
-    it("shoud switch form status", () => {
-        const newForm = formService.createForm({
+    it("shoud switch form status", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -180,12 +180,12 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        expect(formService.switchFormStatus(newForm.id)).toBe("published");
-        expect(formService.switchFormStatus(newForm.id)).toBe("draft");
+        expect(await formService.switchFormStatus(newForm.id)).toBe("published");
+        expect(await formService.switchFormStatus(newForm.id)).toBe("draft");
     });
 
-    it("should get form reponses", () => {
-        const newForm = formService.createForm({
+    it("should get form reponses", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -195,8 +195,8 @@ describe("Form service test suite", () => {
                 },
             ],
         });
-        formService.switchFormStatus(newForm.id);
-        formService.addSubmittedForm(
+        await formService.switchFormStatus(newForm.id);
+        await formService.addSubmittedForm(
             {
                 email: "test@gmail.com",
                 data: [
@@ -209,16 +209,16 @@ describe("Form service test suite", () => {
             },
             newForm.id
         );
-        const responses = formService.getFormResponses(newForm.id);
+        const responses = await formService.getFormResponses(newForm.id);
         expect(Object.keys(responses)[0]).toBe("test@gmail.com");
     });
 
-    it("should fail to get responses if form id is not found", () => {
-        expect(() => formService.getFormResponses(1)).toThrow(NotFoundError);
+    it("should fail to get responses if form id is not found", async () => {
+        await expect(() => formService.getFormResponses(1)).rejects.toThrow(NotFoundError);
     });
 
-    it("get form elements", () => {
-        const newForm = formService.createForm({
+    it("get form elements", async () => {
+        const newForm = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [
@@ -229,7 +229,7 @@ describe("Form service test suite", () => {
             ],
         });
 
-        const elements = formService.getFormElements(newForm.id);
+        const elements = await formService.getFormElements(newForm.id);
         expect(elements[0].name).toBe("age");
         expect(elements[0].type).toBe("number");
     });

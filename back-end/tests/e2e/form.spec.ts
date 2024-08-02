@@ -19,7 +19,7 @@ describe('Form test suite', () => {
     let app: Express;
     let form: Form;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         submittedFormRepo = new SubmittedFormRepository();
         submittedFormService = new SubmittedFormService(submittedFormRepo);
         formRepo = new FormRepository();
@@ -28,7 +28,7 @@ describe('Form test suite', () => {
         userService = new UserService(userRepo, formService);
         app = makeApp(formService, userService);
 
-        form = formService.createForm({
+        form = await formService.createForm({
             name: "poll",
             description: "test",
             elements: [

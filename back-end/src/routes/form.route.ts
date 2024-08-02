@@ -29,7 +29,7 @@ export const makeFormRoute = (formService: FormService) => {
         const formId = z.coerce.number().parse(req.params.formId);
 
         handleExpress(res, async () => {
-            const formStatus = formService.switchFormStatus(formId);
+            const formStatus = await formService.switchFormStatus(formId);
             if (formStatus == "published") {
                 const formURL =
                     req.protocol + "://" + req.get("host") + req.originalUrl;
