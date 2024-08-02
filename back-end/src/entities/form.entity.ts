@@ -1,11 +1,18 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryColumn,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 import { UserEntity } from "./user.entity";
 import { FormElement } from "../models/formElement.model";
 import { SubmittedFormEntity } from "./submittedForm.entity";
 
 @Entity("forms")
 export class FormEntity {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id!: number;
 
     @Column()

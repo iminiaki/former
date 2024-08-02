@@ -2,7 +2,6 @@ import { FormDto, formDto } from "../dtos/createForm.dto";
 import { CreateSubmittedFormDto } from "../dtos/createSubmittedForm.dto";
 import { Form } from "../models/form.model";
 import { SubmittedForm } from "../models/submittedForm.model";
-import { IFormRepository } from "../repositories/form.repository";
 import {
     ForbiddenError,
     HttpError,
@@ -10,12 +9,13 @@ import {
 } from "../utilities/HttpError";
 import { SubmittedFormService } from "./submittedForm.service";
 import { FormElementWithValue } from "../models/formElementWithValue.model";
+import { IFormRepository } from "../repositories/db/form.dbRepository";
 
 export class FormService {
     constructor(
         private formRepo: IFormRepository,
         private submittedFormService: SubmittedFormService
-    ) { }
+    ) {}
 
     createForm(dto: FormDto) {
         try {
@@ -49,7 +49,7 @@ export class FormService {
             throw new HttpError(409, "Conflict");
         }
 
-        this.formRepo.addSubmittedForm(formId, newSubmittedForm.id);
+        this.formRepo.addSubmittedForm(formId, newSubmittedForm);
         return true;
     }
 
@@ -71,10 +71,10 @@ export class FormService {
             return responses;
         }
 
-        form.submittedForms.forEach(async (submittedFormId) => {
+        form.submittedForms.forEach(async (submittedForm) => {
             const submittedForm =
                 await this.submittedFormService.readSubmittedFormById(
-                    submittedFormId
+                    submittedForm.id
                 );
             if (submittedForm) {
                 responses.push(submittedForm);
@@ -188,7 +188,7 @@ export class FormService {
     }
 
     async updateForm(form: Form) {
-        const updateStatus = await this.formRepo.updateForm(form)
+        const updateStatus = await this.formRepo.updateForm(form);
         if (updateStatus) {
             return true;
         }

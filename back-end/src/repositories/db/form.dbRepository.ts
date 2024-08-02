@@ -1,13 +1,24 @@
 import { DataSource, Repository } from "typeorm";
 import { FormEntity } from "../../entities/form.entity";
-import { CreateForm } from "../form.repository";
 import { SubmittedFormEntity } from "../../entities/submittedForm.entity";
 import { Form } from "../../models/form.model";
+import { FormElement } from "../../models/formElement.model";
+import { SubmittedForm } from "../../models/submittedForm.model";
+import { CreateSubmittedForm } from "../submittedForm.repository";
+
+export interface CreateForm {
+    name: string;
+    description: string;
+    elements: FormElement[];
+}
 
 export interface IFormRepository {
     createForm(form: CreateForm): Promise<Form>;
     readForm(formId: number): Promise<Form | null>;
-    addSubmittedForm(formId: number, submittedFormId: number): Promise<boolean>;
+    addSubmittedForm(
+        formId: number,
+        submittedForm: CreateSubmittedForm
+    ): Promise<boolean>;
     updateForm(form: Form): Promise<boolean>;
     deleteForm(form: Form): Promise<boolean>;
     getAllForms(): Promise<Form[]>;
@@ -20,16 +31,12 @@ export class FormDbRepository implements IFormRepository {
     }
 
     public async createForm(form: CreateForm): Promise<Form> {
-        const newFormEntity = this.formRepo.create({
+        const newFormEntity = await this.formRepo.save({
             ...form,
             status: "draft",
             submittedForms: [],
         });
-        const savedEntity = await this.formRepo.save(newFormEntity);
-        return {
-            ...savedEntity,
-            submittedForms: [],
-        };
+        return newFormEntity;
     }
 
     public async readForm(formId: number): Promise<Form | null> {
@@ -41,37 +48,26 @@ export class FormDbRepository implements IFormRepository {
     }
 
     public async updateForm(form: Form): Promise<boolean> {
-        try {
-            const result = await this.formRepo.update(form.id, {
-                name: form.name,
-                description: form.description,
-                elements: form.elements,
-                status: form.status,
-            });
-            return result.affected !== 0;
-        } catch {
+        if (!(await this.readForm(form.id))) {
             return false;
         }
+        await this.formRepo.save(form);
+        return true;
     }
 
     public async addSubmittedForm(
         formId: number,
-        submittedFormId: number
+        submittedForm: CreateSubmittedForm
     ): Promise<boolean> {
-        try {
-            const formEntity = await this.formRepo.findOneBy({ id: formId });
-            if (formEntity) {
-                const submittedFormEntity = {
-                    id: submittedFormId,
-                } as SubmittedFormEntity;
-                formEntity.submittedForms.push(submittedFormEntity);
-                await this.formRepo.save(formEntity);
-                return true;
-            }
-            return false;
-        } catch {
-            return false;
+        const formEntity = await this.formRepo.findOneBy({ id: formId });
+        if (formEntity) {
+            await this.formRepo.save({
+                ...formEntity,
+                submittedForms: [...formEntity.submittedForms, submittedForm],
+            });
+            return true;
         }
+        return false;
     }
 
     public async deleteForm(form: Form): Promise<boolean> {

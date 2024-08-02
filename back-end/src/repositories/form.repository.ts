@@ -3,11 +3,11 @@ import { Form } from "../models/form.model";
 import { FormElement } from "../models/formElement.model";
 import { IFormRepository } from "./db/form.dbRepository";
 
-export interface CreateForm {
-    name: string;
-    description: string;
-    elements: FormElement[];
-}
+// export interface CreateForm {
+//     name: string;
+//     description: string;
+//     elements: FormElement[];
+// }
 
 // export class FormRepository implements IFormRepository {
 //     private formRepo: Form[];
