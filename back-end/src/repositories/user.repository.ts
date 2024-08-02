@@ -5,6 +5,7 @@ import { IUserRepository } from "./db/user.dbRepository";
 export interface CreateUser {
     name: string;
     password: string;
+    forms: Form[];
 }
 
 // export class UserRepository implements IUserRepository {

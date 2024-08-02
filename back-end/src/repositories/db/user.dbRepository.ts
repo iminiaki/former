@@ -1,8 +1,13 @@
 import { DataSource, Repository } from "typeorm";
-import { CreateUser } from "../user.repository";
 import { UserEntity } from "../../entities/user.entity";
 import { FormEntity } from "../../entities/form.entity";
 import { User } from "../../models/user.model";
+
+export interface CreateUser {
+    name: string;
+    password: string;
+    forms: Form[];
+}
 
 export interface IUserRepository {
     createUser(user: CreateUser): Promise<User>;
