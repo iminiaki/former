@@ -51,10 +51,10 @@ describe("User service test suite", () => {
         });
     });
 
-    afterAll(async () => {
-        await AppDataSource.dropDatabase();
-        await AppDataSource.destroy();
-    });
+    // afterAll(async () => {
+    //     await AppDataSource.dropDatabase();
+    //     await AppDataSource.destroy();
+    // });
 
     it("should fail to get user forms if there is no user with that name and password", async () => {
         await expect(
@@ -87,6 +87,8 @@ describe("User service test suite", () => {
                 ],
             }
         );
+
+        console.log(newForm)
 
         expect(newForm.name).toBe("poll");
         expect(newForm).toHaveProperty("description");

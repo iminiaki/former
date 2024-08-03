@@ -33,6 +33,10 @@ export class FormService {
         return this.formRepo.createForm(newForm);
     }
 
+    addFormToUser(form: Form, userId: number) {
+        return this.formRepo.addFormToUser(form, userId)
+    }
+
     async addSubmittedForm(dto: CreateSubmittedFormDto, formId: number) {
         const form = await this.readFormById(formId);
         const newSubmittedForm =
@@ -179,6 +183,10 @@ export class FormService {
             description: form.description,
             elements: form.elements,
         };
+    }
+
+    async getFormByUserId(userId: number) {
+        
     }
 
     async readFormById(formId: number) {

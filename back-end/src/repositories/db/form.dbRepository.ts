@@ -14,6 +14,7 @@ export interface CreateForm {
 
 export interface IFormRepository {
     createForm(form: CreateForm): Promise<Form>;
+    addFormToUser(form: Form, userId: number): Promise<Form>;
     readForm(formId: number): Promise<Form | null>;
     addSubmittedForm(
         formId: number,
@@ -37,6 +38,11 @@ export class FormDbRepository implements IFormRepository {
             submittedForms: [],
         });
         return newFormEntity;
+    }
+
+    public async addFormToUser(form: Form, userId: number): Promise<Form> {
+        const userForm = await this.formRepo.save({...form, userId: userId});
+        return userForm;
     }
 
     public async readForm(formId: number): Promise<Form | null> {

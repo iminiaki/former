@@ -77,12 +77,13 @@ export class UserService {
         }
 
         try {
-            const createdForm: Form | FormEntity = await this.formService.createForm(dto);
-            if (!this.userRepo.addForm(user.id, createdForm.id)) {
-                throw new NotFoundError();
-            }
+            const createdForm: Form = await this.formService.createForm(dto);
+            const addedForm: Form = await this.formService.addFormToUser(createdForm, user.id)
+            // if (!this.userRepo.addForm(user.id, createdForm.id)) {
+            //     throw new NotFoundError();
+            // }
 
-            return createdForm;
+            return addedForm;
         } catch (error) {
             throw error;
         }
